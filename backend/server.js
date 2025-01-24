@@ -7,13 +7,15 @@ const usersRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const schedulesRoute = require("./routes/users");
 const moviesRoute = require("./routes/users");
+const cookieParser = require("cookie-parser")
 
 dotenv.config();
 
 const app = express();
 
 //middleware
-app.use(express.json);
+app.use(express.json());
+app.use(cookieParser())
 app.use(cors({
     credentials: true,
     origin: 'http://localhost:5173',
@@ -26,7 +28,6 @@ app.use("/api/auth", authRoute);
 
 
 connectDB();
-
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
