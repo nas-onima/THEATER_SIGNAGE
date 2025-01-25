@@ -2,16 +2,20 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const bodyParser = require('body-parser');
 
 const usersRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
-const schedulesRoute = require("./routes/users");
-const moviesRoute = require("./routes/users");
+const schedulesRoute = require("./routes/schedules");
+const moviesRoute = require("./routes/movies");
 const cookieParser = require("cookie-parser")
 
 dotenv.config();
 
 const app = express();
+
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 //middleware
 app.use(express.json());
