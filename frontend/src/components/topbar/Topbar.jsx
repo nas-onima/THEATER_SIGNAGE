@@ -1,0 +1,24 @@
+import React from "react";
+import styles from "./Topbar.module.css";
+import DehazeIcon from "@mui/icons-material/Dehaze";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
+export default function Topbar() {
+  return (
+    <div className={styles.mainContainer}>
+      <div className={styles.menu}>
+        <div className={styles.menuButton}>
+          <DehazeIcon className={styles.menuIcon} />
+        </div>
+      </div>
+      <div className={styles.logo}>Theater Signage System for NGGC</div>
+      <div className={styles.user}>
+        <div className={styles.userButton}>
+          {/* <div className={styles.userLabel}>LOGIN</div> */}
+          <AccountCircleIcon className={styles.userIcon} />
+        </div>
+      </div>
+      
+    </div>
+  );
+}
