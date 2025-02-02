@@ -3,6 +3,12 @@ import styles from "./Topbar.module.css";
 import DehazeIcon from "@mui/icons-material/Dehaze";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
+/**
+ * This is the Topbar component for the Theater Signage System.
+ * It displays the menu, logo, and user information.
+ *
+ * @returns {React.ReactElement} - The Topbar component with menu, logo, and user information.
+ */
 export default function Topbar() {
   return (
     <div className={styles.mainContainer}>
@@ -18,7 +24,8 @@ export default function Topbar() {
           <AccountCircleIcon className={styles.userIcon} />
         </div>
       </div>
-      
+
     </div>
   );
 }
+
