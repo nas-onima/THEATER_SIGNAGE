@@ -83,7 +83,7 @@ router.delete("/:id", verifyToken, async (req, res) => {
     } catch (e) {
         return res.status(500).json(e);
     }
-})
+});
 
 
 module.exports = router;
