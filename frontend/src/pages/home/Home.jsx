@@ -1,10 +1,15 @@
-import React from 'react'
-import Topbar from '../../components/topbar/Topbar'
+import React from "react";
+import Topbar from "../../components/topbar/Topbar";
+import SchedulePanel from "../../components/schedulePanel/SchedulePanel";
+import styles from "./Home.module.css";
 
 export default function Home() {
   return (
-    <div className="homeContainer">
-        <Topbar/>
-    </div>
-  )
+    <>
+      <Topbar />
+      <div className={styles.homeContainer}>
+        <SchedulePanel />
+      </div>
+    </>
+  );
 }
