@@ -7,6 +7,7 @@ import getDay from "date-fns/getDay";
 import parse from "date-fns/parse";
 import { ja } from "date-fns/locale";
 import startOfWeek from "date-fns/startOfWeek";
+import axios from "axios";
 
 const locales = {
   ja: ja,
@@ -20,14 +21,14 @@ const localizer = dateFnsLocalizer({
 });
 
 const resources = [
-  { resourceId: "theater1", resourceTitle: "シアター1" },
-  { resourceId: "theater2", resourceTitle: "シアター2" },
-  { resourceId: "theater3", resourceTitle: "シアター3" },
-  { resourceId: "theater4", resourceTitle: "シアター4" },
-  { resourceId: "theater5", resourceTitle: "シアター5" },
-  { resourceId: "theater6", resourceTitle: "シアター6" },
-  { resourceId: "theater7", resourceTitle: "シアター7" },
-  { resourceId: "theater8", resourceTitle: "シアター8" },
+  { resourceId: 1, resourceTitle: "シアター1" },
+  { resourceId: 2, resourceTitle: "シアター2" },
+  { resourceId: 3, resourceTitle: "シアター3" },
+  { resourceId: 4, resourceTitle: "シアター4" },
+  { resourceId: 5, resourceTitle: "シアター5" },
+  { resourceId: 6, resourceTitle: "シアター6" },
+  { resourceId: 7, resourceTitle: "シアター7" },
+  { resourceId: 8, resourceTitle: "シアター8" },
 ];
 
 export default function SchedulePanel() {
@@ -42,11 +43,21 @@ export default function SchedulePanel() {
       localizer.format(date, "HH:mm", culture),
   };
 
+  const events = [
+    {
+      title: "イベント1",
+      start: new Date(2025, 2, 8, 12, 0),
+      end: new Date(2025, 2, 8, 13, 0),
+      resource: 1,
+    }
+  ];
+
   return (
     <div className={styles.mainContainer}>
       <Calendar
         localizer={localizer}
-        events={[]}
+        events={events}
+        showAllEvents={true}
         step={1}
         timeslots={5}
         resources={resources}
@@ -55,6 +66,7 @@ export default function SchedulePanel() {
         min={minTime} // 動的に設定
         max={maxTime} // 動的に設定
         formats={formats} // 24時間表記に設定
+        className={styles.calendar}
       />
     </div>
   );

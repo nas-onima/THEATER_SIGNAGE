@@ -50,6 +50,7 @@ router.get("/:id", verifyToken, async (req, res) => {
     }
 });
 
+
 // 特定のシアターのスケジュールデータ更新（スケジュールの更新はこっちを常用）
 router.patch("/:id", verifyToken, async (req, res) => {
     try {
