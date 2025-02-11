@@ -8,7 +8,7 @@ const usersRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const schedulesRoute = require("./routes/schedules");
 const moviesRoute = require("./routes/movies");
-const cookieParser = require("cookie-parser")
+const cookieParser = require("cookie-parser");
 
 dotenv.config();
 
@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(cookieParser())
 app.use(cors({
     credentials: true,
-    origin: 'http://localhost:5174',
+    origin: 'http://localhost:5173',
 }));
 
 app.use("/api/users", usersRoute);

@@ -25,7 +25,7 @@ router.post("/register", verifyToken, async (req, res) => {
 })
 
 // 複数件の映画データ取得（ページネーション対応）
-router.get("/", verifyToken, async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const page = parseInt(req.query.page || "1");
         const limit = parseInt(req.query.limit || "10");
@@ -46,7 +46,7 @@ router.get("/", verifyToken, async (req, res) => {
 })
 
 // 指定された映画データ取得
-router.get("/:id", verifyToken, async (req, res) => {
+router.get("/:id", async (req, res) => {
     try {
         const movie = await Movie.findById(req.params.id);
         if (!movie) return res.status(404).json("MOVIE NOT FOUND");

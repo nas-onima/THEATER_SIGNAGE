@@ -8,6 +8,7 @@ import parse from "date-fns/parse";
 import { ja } from "date-fns/locale";
 import startOfWeek from "date-fns/startOfWeek";
 import axios from "axios";
+import { useUserData } from "../../hooks/useUserData";
 
 const locales = {
   ja: ja,
@@ -21,17 +22,19 @@ const localizer = dateFnsLocalizer({
 });
 
 const resources = [
-  { resourceId: 1, resourceTitle: "シアター1" },
-  { resourceId: 2, resourceTitle: "シアター2" },
-  { resourceId: 3, resourceTitle: "シアター3" },
-  { resourceId: 4, resourceTitle: "シアター4" },
-  { resourceId: 5, resourceTitle: "シアター5" },
-  { resourceId: 6, resourceTitle: "シアター6" },
-  { resourceId: 7, resourceTitle: "シアター7" },
-  { resourceId: 8, resourceTitle: "シアター8" },
+  { resource: 1, resourceTitle: "シアター1" },
+  { resource: 2, resourceTitle: "シアター2" },
+  { resource: 3, resourceTitle: "シアター3" },
+  { resource: 4, resourceTitle: "シアター4" },
+  { resource: 5, resourceTitle: "シアター5" },
+  { resource: 6, resourceTitle: "シアター6" },
+  { resource: 7, resourceTitle: "シアター7" },
+  { resource: 8, resourceTitle: "シアター8" },
 ];
 
 export default function SchedulePanel() {
+  const { userData, isLoading, isError, mutate } = useUserData();
+
   const minTime = new Date();
   minTime.setHours(7, 0, 0); // AM7:00に設定
 
@@ -46,14 +49,16 @@ export default function SchedulePanel() {
   const events = [
     {
       title: "イベント1",
-      start: new Date(2025, 2, 8, 12, 0),
-      end: new Date(2025, 2, 8, 13, 0),
+      start: new Date(2025, 2, 11, 12, 0),
+      end: new Date(2025, 2, 11, 13, 0),
       resource: 1,
-    }
+    },
   ];
 
   return (
     <div className={styles.mainContainer}>
+      {userData ? userData.name : "未ログイン"}
+      {isLoading ? "true" : "false"}
       <Calendar
         localizer={localizer}
         events={events}

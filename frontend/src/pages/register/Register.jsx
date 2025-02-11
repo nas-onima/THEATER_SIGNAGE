@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import styles from "./Login.module.css";
+import styles from "./Register.module.css";
 import {
   auth,
-  loginWithEmailAndPassword,
+  registerWithEmailAndPassword,
   signInWithGoogle,
 } from "../../firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
+
 import { IoLogoGoogle } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
 
-export default function Login() {
+export default function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -28,15 +30,35 @@ export default function Login() {
     return pattern.test(email);
   };
 
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    if (!validateEmail(email)) {
+      setErrorMessage("無効なメールアドレスです。");
+      return;
+    }
+    if (name !== "") {
+      registerWithEmailAndPassword(name, email, password);
+    } else {
+      alert("名前を入力してください");
+    }
+  };
+
   return (
     <>
       <div className={styles.login}>
         <div className={styles.loginWrapper}>
-          <form
-            className={styles.loginForm}
-            onSubmit={() => loginWithEmailAndPassword(email, password)}
-          >
-            <h3>ログイン</h3>
+          <form className={styles.loginForm} onSubmit={handleRegister}>
+            <h3>新規登録</h3>
+            <div className={styles.inputItem}>
+              <label htmlFor="email">ユーザ名:</label>
+              <input
+                type="name"
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
             <div className={styles.inputItem}>
               <label htmlFor="email">メールアドレス:</label>
               <input
@@ -59,7 +81,7 @@ export default function Login() {
             </div>
             <div>
               <button type="submit" className={styles.loginButton}>
-                ログイン
+                登録
               </button>
             </div>
             {errorMessage && <p className={styles.error}>{errorMessage}</p>}
@@ -68,7 +90,7 @@ export default function Login() {
                 className={styles.signupButton}
                 onClick={signInWithGoogle}
               >
-                Googleでサインイン
+                Googleでサインアップ
               </button>
             </div>
           </form>

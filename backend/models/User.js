@@ -8,24 +8,14 @@ const userSchema = new mongoose.Schema({
         trim: true,
         minlength: 2,
     },
-    userId: {
+    email: {
         type: String,
         required: true,
         unique: true,
     },
-    authType: {
+    uid: {
         type: String,
-        enum: ['password', 'google'],
-        default: 'password',
-    },
-    password: {
-        type: String,
-        required: false,
-        minlength: 6,
-    },
-    googleID: {
-        type: String,
-        required: false,
+        required: true,
     },
     role: {
         type: String,
@@ -34,17 +24,17 @@ const userSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-// DBに保存するPWをハッシュ化
-userSchema.pre('save', async function (next) {
-    if (this.isModified('password')){
-        this.password = await bcrypt.hash(this.password, 8);
-    }
-    next();
-});
+// // DBに保存するPWをハッシュ化
+// userSchema.pre('save', async function (next) {
+//     if (this.isModified('password')) {
+//         this.password = await bcrypt.hash(this.password, 8);
+//     }
+//     next();
+// });
 
-// ハッシュ化されたPWの検証関数
-userSchema.methods.chkPwd = function(password){
-    return bcrypt.compare(password, this.password);
-}
+// // ハッシュ化されたPWの検証関数
+// userSchema.methods.chkPwd = function (password) {
+//     return bcrypt.compare(password, this.password);
+// }
 
 module.exports = mongoose.model('User', userSchema);

@@ -2,9 +2,9 @@ const router = require("express").Router();
 const User = require("../models/User");
 const { verifyToken } = require("./middleware");
 
-router.get("/:id", verifyToken, async (req, res) => {
+router.get("/:uid", verifyToken, async (req, res) => {
     try {
-        const user = await User.findById(req.params.id).select("-password");
+        const user = await User.findById(req.params.uid).select("-password");
         if (!user) return res.status(404).json("TARGET USER NOT FOUND");
         return res.status(200).json(user);
     } catch (e) {
@@ -12,13 +12,13 @@ router.get("/:id", verifyToken, async (req, res) => {
     }
 });
 
-router.patch("/:id", verifyToken, async (req, res) => {
+router.patch("/:uid", verifyToken, async (req, res) => {
     try {
-        const targetUser = await User.findById(req.params.id).select("userId");
+        const targetUser = await User.findById(req.params.uid).select("uid");
         if (!targetUser) return res.status(404).json("TARGET USER NOT FOUND");
-        const operatingUserId = req.userId;
-        const operatingUser = await User.findOne({ userId: operatingUserId }).select("role");
-        if (operatingUserId === targetUser.userId || operatingUser.role === "admin") {
+        const operatingUid = req.uid;
+        const operatingUser = await User.findOne({ uid: operatingUid }).select("role");
+        if (operatingUid === targetUser.uid || operatingUser.role === "admin") {
             const user = await User.findByIdAndUpdate(
                 req.params.id,
                 req.body,
@@ -37,11 +37,11 @@ router.patch("/:id", verifyToken, async (req, res) => {
 
 router.delete("/:id", verifyToken, async (req, res) => {
     try {
-        const targetUser = await User.findById(req.params.id).select("userId");
+        const targetUser = await User.findById(req.params.id).select("uid");
         if (!targetUser) return res.status(404).json("TARGET USER NOT FOUND");
-        const operatingUserId = req.userId;
-        const operatingUser = await User.findOne({ userId: operatingUserId }).select("role");
-        if (operatingUserId === targetUser.userId || operatingUser.role === "admin") {
+        const operatingUid = req.uid;
+        const operatingUser = await User.findOne({ uid: operatingUid }).select("role");
+        if (operatingUid === targetUser.uid || operatingUser.role === "admin") {
             const user = await User.findByIdAndDelete(req.params.id);
             return res.status(200).json("USER DELETED");
         }
