@@ -43,7 +43,7 @@ const registerUserToMongoDB = async (name, email, uid) => {
   }
 };
 
-const signInWithGoogle = async () => {
+const signUpWithGoogle = async () => {
   try {
     const res = await signInWithPopup(auth, provider);
     const user = res.user;
@@ -53,6 +53,27 @@ const signInWithGoogle = async () => {
       user.email,
       user.uid
     )
+    // const q = query(collection(firestore, "users"), where("uid", "==", user.uid));
+    // const docs = await getDocs(q);
+    // if (docs.docs.length === 0) {
+    //   await addDoc({
+    //     uid: user.uid,
+    //     name: user.displayName,
+    //     authProvider: "google",
+    //     email: user.email,
+    //   });
+    // }
+  } catch (error) {
+    console.log(error.message);
+    console.log(error);
+  }
+}
+
+const signInWithGoogle = async () => {
+  try {
+    const res = await signInWithPopup(auth, provider);
+    const user = res.user;
+
     // const q = query(collection(firestore, "users"), where("uid", "==", user.uid));
     // const docs = await getDocs(q);
     // if (docs.docs.length === 0) {
@@ -100,9 +121,8 @@ const sendPwdReset = async (email) => {
   }
 }
 
-const logout = () => {
-  signOut(auth);
+const logout = async () => {
+  await signOut(auth);
 }
 
-
-export { auth, firestore, analytics, signInWithGoogle, loginWithEmailAndPassword, registerWithEmailAndPassword, sendPwdReset, logout };
+export { auth, firestore, analytics, signUpWithGoogle, signInWithGoogle, loginWithEmailAndPassword, registerWithEmailAndPassword, sendPwdReset, logout };
