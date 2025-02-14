@@ -1,0 +1,181 @@
+.movie {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: left;
+    background-color: rgb(188, 165, 126);
+    border-radius: 5px;
+    margin: 2px;
+    width: 100%;
+}
+
+.movieWrapper {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding: 5px;
+    background-color: aliceblue;
+    border: solid 1px black;
+    border-radius: 5px;
+    width: 100%;
+    transition: all .2s;
+}
+
+.movieWrapper:hover {
+    transform: scale(1.01);
+}
+
+.datetime {
+    display: flex;
+    border-radius: 5px;
+    flex-direction: column;
+    background-color: rgb(39, 39, 39);
+    align-items: center;
+    padding: 5px;
+
+    white-space: nowrap;
+    flex: 2;
+}
+
+.date {
+    color: white;
+}
+
+.pubLabel {
+    color: white;
+}
+
+.description {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex: 16;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.userText {
+    width: 10em;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-left: 10px;
+    margin-right: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.userImg {
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.title {
+    width: 100%;
+    font-weight: 600;
+    margin-left: 10px;
+    padding-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    border-left: 3px solid #4b4b4b;
+    text-align: left;
+    text-overflow: ellipsis;
+}
+
+.rating {
+    white-space: nowrap;
+    margin: 10px;
+    padding-left: 5px;
+    font-weight: 600;
+    flex: 1;
+    text-align: right;
+}
+
+.pendingControlButtons {
+    display: flex;
+
+}
+
+.pendingControlButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 5em;
+    font-size: 15px;
+    font-weight: 550;
+    padding: 5px;
+    border-radius: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.pendingControlButtonIconAccept {
+    color: rgb(38, 138, 45);
+}
+
+.pendingControlButtonIconDeny {
+    color: rgb(138, 38, 38);
+}
+
+@media only screen and (max-width: 1199px) {
+    /* タブレット (landscape) */
+}
+
+@media only screen and (max-width: 767px) {
+
+    /* タブレット (portrait) */
+
+}
+
+@media only screen and (max-width: 520px) {
+
+    /* スマホ */
+    .movieWrapper {
+        flex-direction: column;
+        align-items: start;
+    }
+
+    .datetime {
+        flex-direction: row;
+        width: auto;
+    }
+
+    .time {
+        margin-left: 10px;
+    }
+
+    .description {
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+    }
+
+    .user {
+        margin-left: 10px;
+    }
+
+    .userImg {
+        width: 1em;
+        height: 1em;
+    }
+
+    .title {
+        width: 10em;
+    }
+
+    .amount {
+        margin: 0;
+    }
+
+    .pendingControlButtons {
+        display: flex;
+        flex-direction: row;
+    }
+}
