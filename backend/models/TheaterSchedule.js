@@ -2,27 +2,28 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const scheduleSchema = new mongoose.Schema({
-    theaterName: {
-        type: String,
+    date:{
+        type: Date,
         required: true,
     },
-    schedule: [
+    schedules: [
         {
+            theater: {
+                type: String,
+                enum: ["1","2","3","4","5","6","7","8"],
+                required: true,
+            },
             movieId: {
                 type: String,
-                required: true
+                required: true,
             },
-            mainStartTime: {
+            startTime: {
                 type: Date,
-                required: true
-            },
-            mainEndTime: {
-                type: Date,
-                required: true
+                required: true,
             },
             remarks: {
                 type: String,
-                required: false
+                required: false,
             },
         }
     ]
