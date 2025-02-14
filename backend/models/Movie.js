@@ -16,8 +16,12 @@ const movieSchema = new mongoose.Schema({
     },
     showingType:{
         type: [String],
-        default: []
+        default: [],
     }, 
+    releaseDate:{
+        type: Date,
+        required: true,
+    },
 }, {
     timestamps: true
 });
