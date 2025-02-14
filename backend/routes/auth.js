@@ -42,4 +42,9 @@ router.get("/user", verifyToken, async (req, res) => {
     }
 });
 
+// コーヒーが欲しいとき
+router.get("/coffee", async (req, res) => {
+    return res.status(418).json("I'm a teapot");
+});
+
 module.exports = router;
