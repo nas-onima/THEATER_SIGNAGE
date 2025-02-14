@@ -1,27 +1,27 @@
 const mongoose = require("mongoose");
 
 const movieSchema = new mongoose.Schema({
-    title:{
+    title: {
         type: String,
         required: true
     },
-    image:{
+    image: {
         type: String,
         required: false
     },
-    rating:{
+    rating: {
         type: String,
-        enum: ["g", "pg12", "r15", "r18"],
-        default: "g"
+        enum: ["", "G", "PG12", "R15+", "R18+"],
+        default: ""
     },
-    showingType:{
+    showingType: {
         type: [String],
         default: [],
-    }, 
-    releaseDate:{
+    },
+    releaseDate: {
         type: Date,
         required: true,
-        
+
     },
 }, {
     timestamps: true

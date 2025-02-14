@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./movieList.module.css";
 import Topbar from "../../components/topbar/Topbar";
 import useSWR, { mutate } from "swr";
-import Movie from "../../components/movie/Movie";
+import MovieListItem from "../../components/movie/MovieListItem";
 import { getIdTokenForSWR } from "../../hooks/useUserData";
 
 export default function Movies() {
@@ -129,7 +129,7 @@ export default function Movies() {
   };
 
   const { data, error, isLoading, mutate } = useSWR(
-    `http://localhost:5000/api/movies?page=${page}&limit=${pageLimit}`,
+    `http://localhost:5000/api/movies?page=${page}&limit=${pageLimit}&`,
     fetchMovies
   );
 
@@ -137,31 +137,43 @@ export default function Movies() {
     <>
       <Topbar />
       <div className={styles.movieListWrapper}>
-        <div className={styles.limitSelector}>
-          表示数:
-          <select value={pageLimit} onChange={handlePageLimitChange}>
-            <option key={10} value={10}>
-              10
-            </option>
-            <option key={20} value={20}>
-              20
-            </option>
-            <option key={50} value={50}>
-              50
-            </option>
-            <option key={100} value={100}>
-              100
-            </option>
-          </select>
+        <div className={styles.listSettings}>
+          <div className={styles.limitSelector}>
+            表示数:
+            <select value={pageLimit} onChange={handlePageLimitChange}>
+              <option key={10} value={10}>
+                10
+              </option>
+              <option key={20} value={20}>
+                20
+              </option>
+              <option key={50} value={50}>
+                50
+              </option>
+              <option key={100} value={100}>
+                100
+              </option>
+            </select>
+          </div>
         </div>
         {data?.movies.map((movie) => (
-          <Movie movie={movie} key={movie._id} className={styles.movie}/>
+          <MovieListItem
+            movie={movie}
+            key={movie._id}
+            className={styles.movie}
+          />
         ))}
         {data?.movies.length === 0 ? (
           <h2 style={{ textAlign: "center" }}>
             映画データが登録されていません
           </h2>
-        ) : null}
+        ) : data ? (
+          ""
+        ) : (
+          <h2 style={{ textAlign: "center" }}>
+            映画データの取得に失敗しました
+          </h2>
+        )}
         <div className={styles.pageSelector}>
           <div className={styles.leftArrow} onClick={handleLeftArrowClick}>
             &#9664;
