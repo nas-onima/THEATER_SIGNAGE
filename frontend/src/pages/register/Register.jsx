@@ -3,7 +3,7 @@ import styles from "./Register.module.css";
 import {
   auth,
   registerWithEmailAndPassword,
-  signUpWithGoogle,
+  signInWithGoogle,
 } from "../../firebase";
 
 import { IoLogoGoogle } from "react-icons/io";
@@ -94,7 +94,7 @@ export default function Register() {
               <div className={styles.signup}>
                 <button
                   className={styles.signupButton}
-                  onClick={signUpWithGoogle}
+                  onClick={signInWithGoogle}
                 >
                   Googleでサインアップ
                 </button>
