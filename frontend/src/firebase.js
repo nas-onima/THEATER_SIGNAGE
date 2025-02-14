@@ -1,8 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, getIdToken } from "firebase/auth";
 import { getFirestore, query, getDocs, collection, where, addDoc } from "firebase/firestore";
+import { getIdTokenForSWR } from "./hooks/useUserData";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCRmygdaxKCl9jKZG7jyYM58BvOcUkfX5I",
@@ -23,6 +24,16 @@ const firestore = getFirestore(app);
 
 const registerUserToMongoDB = async (name, email, uid) => {
   try {
+    const token = await getIdTokenForSWR();
+    const user = await fetch(`http://localhost:5000/api/auth/user`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (user) return;
+
     await fetch(`http://localhost:5000/api/auth/register`, {
       method: "POST",
       body: JSON.stringify({
@@ -34,7 +45,7 @@ const registerUserToMongoDB = async (name, email, uid) => {
         "Content-type": "application/json",
       },
     }).then(() => {
-      console.log("USER REGISTERED TO MONGO DB");
+      console.log();
     }).catch((error) => {
       console.log(error.message);
     });
@@ -43,7 +54,8 @@ const registerUserToMongoDB = async (name, email, uid) => {
   }
 };
 
-const signUpWithGoogle = async () => {
+
+const signInWithGoogle = async () => {
   try {
     const res = await signInWithPopup(auth, provider);
     const user = res.user;
@@ -53,37 +65,7 @@ const signUpWithGoogle = async () => {
       user.email,
       user.uid
     )
-    // const q = query(collection(firestore, "users"), where("uid", "==", user.uid));
-    // const docs = await getDocs(q);
-    // if (docs.docs.length === 0) {
-    //   await addDoc({
-    //     uid: user.uid,
-    //     name: user.displayName,
-    //     authProvider: "google",
-    //     email: user.email,
-    //   });
-    // }
-  } catch (error) {
-    console.log(error.message);
-    console.log(error);
-  }
-}
 
-const signInWithGoogle = async () => {
-  try {
-    const res = await signInWithPopup(auth, provider);
-    const user = res.user;
-
-    // const q = query(collection(firestore, "users"), where("uid", "==", user.uid));
-    // const docs = await getDocs(q);
-    // if (docs.docs.length === 0) {
-    //   await addDoc({
-    //     uid: user.uid,
-    //     name: user.displayName,
-    //     authProvider: "google",
-    //     email: user.email,
-    //   });
-    // }
   } catch (error) {
     console.log(error.message);
     console.log(error);
@@ -125,4 +107,4 @@ const logout = async () => {
   await signOut(auth);
 }
 
-export { auth, firestore, analytics, signUpWithGoogle, signInWithGoogle, loginWithEmailAndPassword, registerWithEmailAndPassword, sendPwdReset, logout };
+export { auth, firestore, analytics, signInWithGoogle, loginWithEmailAndPassword, registerWithEmailAndPassword, sendPwdReset, logout };
