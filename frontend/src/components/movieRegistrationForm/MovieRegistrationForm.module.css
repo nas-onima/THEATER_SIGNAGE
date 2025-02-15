@@ -1,0 +1,88 @@
+.formWrapper {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    background-color: aliceblue;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.formItem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    width: 100%
+}
+
+.showingTypeSettings{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+.showingTypeItem{
+    margin: 5px;
+}
+
+.formLabel{
+    white-space: nowrap;
+    text-align: left;
+}
+
+.formControl{
+    text-align: left;
+    width: 100%;
+}
+
+.formControlButtons{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.formClearButton{
+    width: 20%;
+    height: 50px;
+    border-radius: 10px;
+    transition: all .2s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+.formClearButton:hover{
+    cursor: pointer;
+    box-shadow: 0 0 0;
+}
+.formSubmitButton{
+    width: 20%;
+    height: 50px;
+    border-radius: 10px;
+    transition: all .2s;
+    background-color: rgb(49, 97, 49);
+    color: aliceblue;
+    font-size: larger;
+    font-weight: bolder;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.397);
+}
+.formSubmitButton:hover{
+    cursor: pointer;
+    box-shadow: 0 0 0;
+
+}
+
+
+@media only screen and (max-width: 767px) {
+    /* タブレット (portrait) */
+    .formItem{
+        flex-direction: column;
+    }
+}
+
+@media only screen and (max-width: 520px) {
+    .formItem{
+        flex-direction: column;
+    }
+}

@@ -2,7 +2,14 @@
     margin-top: 10px;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     width: 80%;
+}
+
+.pageTitle{
+    margin-top: 20px;
+    text-align: center;
 }
 
 select {
@@ -87,6 +94,13 @@ select {
 
 .movie{
     display: flex;
+}
+
+.listItemArea{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
     width: 100%;
 }
 

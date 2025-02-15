@@ -4,10 +4,17 @@ import Topbar from "../../components/topbar/Topbar";
 import useSWR, { mutate } from "swr";
 import MovieListItem from "../../components/movie/MovieListItem";
 import { getIdTokenForSWR } from "../../hooks/useUserData";
+import MovieRegistrationForm from "../../components/movieRegistrationForm/MovieRegistrationForm";
 
 export default function Movies() {
   const [page, setPage] = useState(1);
   const [pageLimit, setPageLimit] = useState(10);
+  const [displayMode, setDisplayMode] = useState("list");
+
+  const handleDisplayModeChange = (e) => {
+    setDisplayMode(e.target.value);
+    mutate();
+  };
 
   const handlePageLimitChange = (e) => {
     setPageLimit(Number(e.target.value));
@@ -137,6 +144,8 @@ export default function Movies() {
     <>
       <Topbar />
       <div className={styles.movieListWrapper}>
+        <h1 className={styles.pageTitle}>上映作品管理</h1>
+        <MovieRegistrationForm />
         <div className={styles.listSettings}>
           <div className={styles.limitSelector}>
             表示数:
@@ -155,25 +164,54 @@ export default function Movies() {
               </option>
             </select>
           </div>
+          <div className={styles.displayModeSelector}>
+            表示モード:
+            <select value={displayMode} onChange={handleDisplayModeChange}>
+              <option key={1} value={"list"}>
+                リスト
+              </option>
+              <option key={2} value={"poster"}>
+                ポスター
+              </option>
+            </select>
+          </div>
         </div>
-        {data?.movies.map((movie) => (
-          <MovieListItem
-            movie={movie}
-            key={movie._id}
-            className={styles.movie}
-          />
-        ))}
-        {data?.movies.length === 0 ? (
-          <h2 style={{ textAlign: "center" }}>
-            映画データが登録されていません
-          </h2>
-        ) : data ? (
-          ""
-        ) : (
-          <h2 style={{ textAlign: "center" }}>
-            映画データの取得に失敗しました
-          </h2>
-        )}
+        <div
+          className={styles.listItemArea}
+          style={
+            displayMode === "list"
+              ? {
+                  flexDirection: "column",
+                }
+              : displayMode === "poster"
+              ? {
+                  flexDirection: "row",
+                }
+              : {
+                  display: "none",
+                }
+          }
+        >
+          {data?.movies.map((movie) => (
+            <MovieListItem
+              movie={movie}
+              displayMode={displayMode}
+              key={movie._id}
+              className={styles.movie}
+            />
+          ))}
+          {data?.movies.length === 0 ? (
+            <h2 style={{ textAlign: "center" }}>
+              映画データが登録されていません
+            </h2>
+          ) : data ? (
+            ""
+          ) : (
+            <h2 style={{ textAlign: "center" }}>
+              映画データの取得に失敗しました
+            </h2>
+          )}
+        </div>
         <div className={styles.pageSelector}>
           <div className={styles.leftArrow} onClick={handleLeftArrowClick}>
             &#9664;
