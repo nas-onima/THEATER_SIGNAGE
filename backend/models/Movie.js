@@ -21,7 +21,6 @@ const movieSchema = new mongoose.Schema({
     releaseDate: {
         type: Date,
         required: true,
-
     },
 }, {
     timestamps: true

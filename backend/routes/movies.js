@@ -13,7 +13,8 @@ router.post("/register", verifyToken, async (req, res) => {
             title: req.body.title,
             image: req.body.image || "",
             rating: req.body.rating || "g",
-            showingType: req.body.showingType || []
+            showingType: req.body.showingType || [],
+            releaseDate: req.body.releaseDate,
         });
 
         const user = await newMovie.save();

@@ -6,9 +6,39 @@
     padding: 20px;
     justify-content: center;
     align-items: center;
-    background-color: aliceblue;
+    background-color: rgb(172, 198, 221);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    transition: all .5s;
+}
+
+input{
+    border-radius: 10px;
+}
+
+.formTitle{
+    background-color: rgb(60, 75, 83);
+    padding: 10px;
+    width: 100%;
+    border-radius: 10px;
+    color: white;
+}
+
+.formSubTitle{
+    margin-top: 10px;
+    width: 100%;
+    border-bottom: solid 3px rgb(122, 122, 122);
+    text-align: center;
+}
+
+.posterImage{
+    width: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.formItems{
+    transition: all .5s;
+    width: 100%;
 }
 
 .formItem {
@@ -16,7 +46,8 @@
     justify-content: center;
     align-items: center;
     margin: 20px 0;
-    width: 100%
+    width: 100%;
+    transition: all .5s;
 }
 
 .showingTypeSettings{
@@ -39,12 +70,32 @@
     width: 100%;
 }
 
+.formEndDateField{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pendingButton{
+    width: 50%;
+    height: 40px;
+    border-radius: 10px;
+    transition: all .2s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    font-weight: bolder;
+}
+.pendingButton:hover{
+    cursor: pointer;
+    box-shadow: 0 0 0;
+}
+
 .formControlButtons{
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
+
 .formClearButton{
     width: 20%;
     height: 50px;
@@ -56,6 +107,7 @@
     cursor: pointer;
     box-shadow: 0 0 0;
 }
+
 .formSubmitButton{
     width: 20%;
     height: 50px;
