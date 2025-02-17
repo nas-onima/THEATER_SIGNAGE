@@ -12,7 +12,7 @@ router.post("/register", verifyToken, async (req, res) => {
         const newMovie = await new Movie({
             title: req.body.title,
             image: req.body.image || "",
-            rating: req.body.rating || "g",
+            rating: req.body.rating,
             showingType: req.body.showingType || [],
             releaseDate: req.body.releaseDate,
         });
