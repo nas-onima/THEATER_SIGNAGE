@@ -18,8 +18,9 @@ select {
     height: 35px;
 }
 
-.limitSelector {
-    text-align: right;
+.listSettingsItem {
+    text-align: center;
+    margin: 10px;
 }
 
 .pageSelector {
@@ -114,7 +115,9 @@ select {
     justify-content: center;
 }
 
-
+.listSettings{
+    display: flex;
+}
 
 
 @media only screen and (max-width: 1199px) {

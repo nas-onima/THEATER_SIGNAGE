@@ -22,6 +22,12 @@ const movieSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
+    duration: {
+        type: Number,
+    },
+    endDate: {
+        type: Date,
+    }
 }, {
     timestamps: true
 });

@@ -40,6 +40,7 @@ export default function MovieRegistrationForm() {
           image: imageBase64,
           rating: rating,
           releaseDate: selectedReleaseDate.toISOString(),
+          endDate: selectedEndDate ? selectedEndDate.toISOString() : null,
         }),
       });
       console.log("submitted");

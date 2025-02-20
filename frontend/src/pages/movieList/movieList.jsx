@@ -10,6 +10,7 @@ export default function Movies() {
   const [page, setPage] = useState(1);
   const [pageLimit, setPageLimit] = useState(10);
   const [displayMode, setDisplayMode] = useState("list");
+  const [sortBy, setSortBy] = useState("releaseDate");
 
   const handleDisplayModeChange = (e) => {
     setDisplayMode(e.target.value);
@@ -18,6 +19,11 @@ export default function Movies() {
 
   const handlePageLimitChange = (e) => {
     setPageLimit(Number(e.target.value));
+    mutate();
+  };
+
+  const handleSortByChange = (e) => {
+    setSortBy(e.target.value);
     mutate();
   };
 
@@ -119,11 +125,11 @@ export default function Movies() {
   };
 
   const fetchMovies = async (url) => {
-    const token = await getIdTokenForSWR();
+    //const token = await getIdTokenForSWR();
     const res = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
+        //Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
@@ -147,7 +153,7 @@ export default function Movies() {
         <h1 className={styles.pageTitle}>上映作品管理</h1>
         <MovieRegistrationForm />
         <div className={styles.listSettings}>
-          <div className={styles.limitSelector}>
+          <div className={styles.listSettingsItem}>
             表示数:
             <select value={pageLimit} onChange={handlePageLimitChange}>
               <option key={10} value={10}>
@@ -164,7 +170,7 @@ export default function Movies() {
               </option>
             </select>
           </div>
-          <div className={styles.displayModeSelector}>
+          <div className={styles.listSettingsItem}>
             表示モード:
             <select value={displayMode} onChange={handleDisplayModeChange}>
               <option key={1} value={"list"}>
@@ -172,6 +178,23 @@ export default function Movies() {
               </option>
               <option key={2} value={"poster"}>
                 ポスター
+              </option>
+            </select>
+          </div>
+          <div className={styles.listSettingsItem}>
+            表示順:
+            <select value={sortBy} onChange={handleSortByChange}>
+              <option key={1} value={"releaseDate-1"}>
+                公開日（降順）
+              </option>
+              <option key={2} value={"releaseDate"}>
+                公開日（昇順）
+              </option>
+              <option key={3} value={"title-1"}>
+                タイトル（降順）
+              </option>
+              <option key={4} value={"title"}>
+                タイトル（昇順）
               </option>
             </select>
           </div>
