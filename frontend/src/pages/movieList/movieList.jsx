@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./movieList.module.css";
 import Topbar from "../../components/topbar/Topbar";
 import useSWR, { mutate } from "swr";
@@ -10,32 +10,53 @@ export default function Movies() {
   const [page, setPage] = useState(1);
   const [pageLimit, setPageLimit] = useState(10);
   const [displayMode, setDisplayMode] = useState("list");
-  const [sortBy, setSortBy] = useState("releaseDate");
+  const [sortBy, setSortBy] = useState("releaseDate-1");
+  const [onlyNotEnded, setOnlyNotEnded] = useState(0);
+
+  // ページ読み込み時にローカルストレージから設定項目を読み込む
+  useEffect(() => {
+    const savedPageLimit = localStorage.getItem("pageLimit");
+    const savedDisplayMode = localStorage.getItem("displayMode");
+    const savedSortBy = localStorage.getItem("sortBy");
+    const savedOnlyNotEnded = localStorage.getItem("onlyNotEnded");
+
+    if (savedPageLimit) setPageLimit(Number(savedPageLimit));
+    if (savedDisplayMode) setDisplayMode(savedDisplayMode);
+    if (savedSortBy) setSortBy(savedSortBy);
+    if (savedOnlyNotEnded) setOnlyNotEnded(Number(savedOnlyNotEnded));
+  }, []);
 
   const handleDisplayModeChange = (e) => {
-    setDisplayMode(e.target.value);
-    mutate();
+    const value = e.target.value;
+    setDisplayMode(value);
+    localStorage.setItem("displayMode", value); // ローカルストレージに保存
   };
 
   const handlePageLimitChange = (e) => {
-    setPageLimit(Number(e.target.value));
-    mutate();
+    const value = Number(e.target.value);
+    setPageLimit(value);
+    localStorage.setItem("pageLimit", value); // ローカルストレージに保存
   };
 
   const handleSortByChange = (e) => {
-    setSortBy(e.target.value);
-    mutate();
+    const value = e.target.value;
+    setSortBy(value);
+    localStorage.setItem("sortBy", value); // ローカルストレージに保存
+  };
+
+  const handleOnlyNotEndedChange = (e) => {
+    const value = Number(e.target.value);
+    setOnlyNotEnded(value);
+    localStorage.setItem("onlyNotEnded", value); // ローカルストレージに保存
   };
 
   const handlePageChange = (e) => {
     setPage(Number(e.target.firstChild?.nodeValue));
-    mutate();
   };
 
   const handleLeftArrowClick = () => {
     if (page !== 1) {
       setPage(page - 1);
-      mutate();
     }
   };
 
@@ -46,7 +67,6 @@ export default function Movies() {
     }
     if (page != Math.floor(total / pageLimit) + 1) {
       setPage(page + 1);
-      mutate();
     }
   };
 
@@ -142,7 +162,7 @@ export default function Movies() {
   };
 
   const { data, error, isLoading, mutate } = useSWR(
-    `http://localhost:5000/api/movies?page=${page}&limit=${pageLimit}&`,
+    `http://localhost:5000/api/movies?page=${page}&limit=${pageLimit}&sortby=${sortBy}&notended=${onlyNotEnded}`,
     fetchMovies
   );
 
@@ -152,22 +172,42 @@ export default function Movies() {
       <div className={styles.movieListWrapper}>
         <h1 className={styles.pageTitle}>上映作品管理</h1>
         <MovieRegistrationForm />
+        <h3>画面表示設定</h3>
         <div className={styles.listSettings}>
           <div className={styles.listSettingsItem}>
             表示数:
             <select value={pageLimit} onChange={handlePageLimitChange}>
-              <option key={10} value={10}>
-                10
-              </option>
-              <option key={20} value={20}>
-                20
-              </option>
-              <option key={50} value={50}>
-                50
-              </option>
-              <option key={100} value={100}>
-                100
-              </option>
+              {displayMode === "list" ? (
+                <>
+                  <option key={1} value={10}>
+                    10
+                  </option>
+                  <option key={2} value={20}>
+                    20
+                  </option>
+                  <option key={3} value={50}>
+                    50
+                  </option>
+                  <option key={4} value={100}>
+                    100
+                  </option>
+                </>
+              ) : (
+                <>
+                  <option key={1} value={9}>
+                    9
+                  </option>
+                  <option key={2} value={18}>
+                    18
+                  </option>
+                  <option key={3} value={45}>
+                    45
+                  </option>
+                  <option key={4} value={99}>
+                    99
+                  </option>
+                </>
+              )}
             </select>
           </div>
           <div className={styles.listSettingsItem}>
@@ -197,6 +237,28 @@ export default function Movies() {
                 タイトル（昇順）
               </option>
             </select>
+          </div>
+          <div className={styles.listSettingsItem}>
+            上映終了作品:
+            <select value={onlyNotEnded} onChange={handleOnlyNotEndedChange}>
+              <option key={1} value={0}>
+                表示する
+              </option>
+              <option key={2} value={1}>
+                表示しない
+              </option>
+            </select>
+          </div>
+        </div>
+        <div className={styles.pageSelector}>
+          <div className={styles.leftArrow} onClick={handleLeftArrowClick}>
+            &#9664;
+          </div>
+          <div className={styles.pageSelectorNums}>
+            {generatePageSelector()}
+          </div>
+          <div className={styles.rightArrow} onClick={handleRightArrowClick}>
+            &#9654;
           </div>
         </div>
         <div
@@ -228,7 +290,12 @@ export default function Movies() {
               映画データが登録されていません
             </h2>
           ) : data ? (
-            ""
+            <h3 style={{ textAlign: "center" }}>
+              {data.movies.length + data.pageSize * (data.page - 1)}作品/
+              {data.total}作品中
+            </h3>
+          ) : isLoading ? (
+            <h2 style={{ textAlign: "center" }}>読み込み中・・・</h2>
           ) : (
             <h2 style={{ textAlign: "center" }}>
               映画データの取得に失敗しました
@@ -249,18 +316,37 @@ export default function Movies() {
         <div className={styles.limitSelector}>
           表示数:
           <select value={pageLimit} onChange={handlePageLimitChange}>
-            <option key={10} value={10}>
-              10
-            </option>
-            <option key={20} value={20}>
-              20
-            </option>
-            <option key={50} value={50}>
-              50
-            </option>
-            <option key={100} value={100}>
-              100
-            </option>
+            {displayMode === "list" ? (
+              <>
+                <option key={1} value={10}>
+                  10
+                </option>
+                <option key={2} value={20}>
+                  20
+                </option>
+                <option key={3} value={50}>
+                  50
+                </option>
+                <option key={4} value={100}>
+                  100
+                </option>
+              </>
+            ) : (
+              <>
+                <option key={1} value={9}>
+                  9
+                </option>
+                <option key={2} value={18}>
+                  18
+                </option>
+                <option key={3} value={45}>
+                  45
+                </option>
+                <option key={4} value={99}>
+                  99
+                </option>
+              </>
+            )}
           </select>
         </div>
       </div>

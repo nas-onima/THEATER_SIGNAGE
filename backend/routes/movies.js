@@ -56,52 +56,46 @@ router.get("/", async (req, res) => {
         const page = parseInt(req.query.page || "1");
         const limit = parseInt(req.query.limit || "10");
         const skip = (page - 1) * limit;
+        const qsortby = req.query.sortby;
+        const sortby = qsortby === "releaseDate-1" ? { releaseDate: -1 } : qsortby === "releaseDate" ? { releaseDate: 1 } : qsortby === "title-1" ? { title: -1 } : { title: 1 };
+        const notEnded = parseInt(req.query.notended);
 
-        const movies = await Movie.find().limit(limit).skip(skip).sort({ releaseDate: -1 });
-        const totalMovies = await Movie.countDocuments();
+        if (notEnded) {
+            const now = new Date(); // 現在の日時を取得
+            const movies = await Movie.find({
+                $or: [
+                    { endDate: { $gte: now } },
+                    { endDate: { $exists: false } }
+                ]
+            })
+                .limit(limit)
+                .skip(skip)
+                .sort(sortby);
 
-        return res.status(200).json({
-            total: totalMovies,
-            page: page,
-            pageSize: limit,
-            movies: movies
-        });
-    } catch (e) {
-        return res.status(500).json(e);
-    }
-});
+            const totalMovies = await Movie.countDocuments({
+                $or: [
+                    { endDate: { $gte: now } },
+                    { endDate: { $exists: false } }
+                ]
+            });
 
-// 上映期間中・期間前の映画データ取得（ページネーション対応）
-router.get("/notended", async (req, res) => {
-    try {
-        const page = parseInt(req.query.page || "1");
-        const limit = parseInt(req.query.limit || "10");
-        const skip = (page - 1) * limit;
-        const now = new Date(); // 現在の日時を取得
+            return res.status(200).json({
+                total: totalMovies,
+                page: page,
+                pageSize: limit,
+                movies: movies
+            });
+        } else {
+            const movies = await Movie.find().limit(limit).skip(skip).sort(sortby);
+            const totalMovies = await Movie.countDocuments();
 
-        const movies = await Movie.find({
-            $or: [
-                { endDate: { $gte: now } },
-                { endDate: { $exists: false } }
-            ]
-        })
-            .limit(limit)
-            .skip(skip)
-            .sort({ updatedAt: -1 });
-
-        const totalMovies = await Movie.countDocuments({
-            $or: [
-                { endDate: { $gte: now } },
-                { endDate: { $exists: false } }
-            ]
-        });
-
-        return res.status(200).json({
-            total: totalMovies,
-            page: page,
-            pageSize: limit,
-            movies: movies
-        });
+            return res.status(200).json({
+                total: totalMovies,
+                page: page,
+                pageSize: limit,
+                movies: movies
+            });
+        }
     } catch (e) {
         return res.status(500).json(e);
     }
