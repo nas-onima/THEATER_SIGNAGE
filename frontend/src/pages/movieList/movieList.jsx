@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styles from "./movieList.module.css";
 import Topbar from "../../components/topbar/Topbar";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import MovieListItem from "../../components/movie/MovieListItem";
-import { getIdTokenForSWR } from "../../hooks/useUserData";
 import MovieRegistrationForm from "../../components/movieRegistrationForm/MovieRegistrationForm";
 
 export default function Movies() {
@@ -12,6 +11,8 @@ export default function Movies() {
   const [displayMode, setDisplayMode] = useState("list");
   const [sortBy, setSortBy] = useState("releaseDate-1");
   const [onlyNotEnded, setOnlyNotEnded] = useState(0);
+  const [searchQuery, setSearchQuery] = useState(""); // 検索クエリの状態を追加
+  const [searchInput, setSearchInput] = useState(""); // 検索入力の状態を追加
 
   // ページ読み込み時にローカルストレージから設定項目を読み込む
   useEffect(() => {
@@ -48,6 +49,14 @@ export default function Movies() {
     const value = Number(e.target.value);
     setOnlyNotEnded(value);
     localStorage.setItem("onlyNotEnded", value); // ローカルストレージに保存
+  };
+
+  const handleSearchInputChange = (e) => {
+    setSearchInput(e.target.value);
+  };
+
+  const handleSearch = () => {
+    setSearchQuery(searchInput);
   };
 
   const handlePageChange = (e) => {
@@ -162,7 +171,7 @@ export default function Movies() {
   };
 
   const { data, error, isLoading, mutate } = useSWR(
-    `http://localhost:5000/api/movies?page=${page}&limit=${pageLimit}&sortby=${sortBy}&notended=${onlyNotEnded}`,
+    `http://localhost:5000/api/movies?page=${page}&limit=${pageLimit}&sortby=${sortBy}&notended=${onlyNotEnded}&search=${searchQuery}`,
     fetchMovies
   );
 
@@ -248,6 +257,18 @@ export default function Movies() {
                 表示しない
               </option>
             </select>
+          </div>
+          <div className={styles.searchArea}>
+            検索:
+            <input
+              type="text"
+              value={searchInput}
+              onChange={handleSearchInputChange}
+              placeholder="タイトルで検索"
+            />
+            <button onClick={handleSearch} className={styles.searchButton}>
+              検索
+            </button>
           </div>
         </div>
         <div className={styles.pageSelector}>

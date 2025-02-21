@@ -49,7 +49,6 @@ router.post("/register", verifyToken, async (req, res) => {
     }
 });
 
-
 // 複数件の映画データ取得（ページネーション対応）
 router.get("/", async (req, res) => {
     try {
@@ -59,43 +58,40 @@ router.get("/", async (req, res) => {
         const qsortby = req.query.sortby;
         const sortby = qsortby === "releaseDate-1" ? { releaseDate: -1 } : qsortby === "releaseDate" ? { releaseDate: 1 } : qsortby === "title-1" ? { title: -1 } : { title: 1 };
         const notEnded = parseInt(req.query.notended);
+        const searchQuery = req.query.search || "";
+
+        let query = {};
 
         if (notEnded) {
             const now = new Date(); // 現在の日時を取得
-            const movies = await Movie.find({
-                $or: [
-                    { endDate: { $gte: now } },
-                    { endDate: { $exists: false } }
+            query = {
+                $and: [
+                    {
+                        $or: [
+                            { endDate: { $gte: now } },
+                            { endDate: { $exists: false } }
+                        ]
+                    },
+                    { title: { $regex: searchQuery, $options: "i" } }
                 ]
-            })
-                .limit(limit)
-                .skip(skip)
-                .sort(sortby);
-
-            const totalMovies = await Movie.countDocuments({
-                $or: [
-                    { endDate: { $gte: now } },
-                    { endDate: { $exists: false } }
-                ]
-            });
-
-            return res.status(200).json({
-                total: totalMovies,
-                page: page,
-                pageSize: limit,
-                movies: movies
-            });
+            };
         } else {
-            const movies = await Movie.find().limit(limit).skip(skip).sort(sortby);
-            const totalMovies = await Movie.countDocuments();
-
-            return res.status(200).json({
-                total: totalMovies,
-                page: page,
-                pageSize: limit,
-                movies: movies
-            });
+            query = { title: { $regex: searchQuery, $options: "i" } };
         }
+
+        const movies = await Movie.find(query)
+            .limit(limit)
+            .skip(skip)
+            .sort(sortby);
+
+        const totalMovies = await Movie.countDocuments(query);
+
+        return res.status(200).json({
+            total: totalMovies,
+            page: page,
+            pageSize: limit,
+            movies: movies
+        });
     } catch (e) {
         return res.status(500).json(e);
     }
@@ -111,24 +107,6 @@ router.get("/movie/:id", async (req, res) => {
         return res.status(500).json(e);
     }
 });
-
-// // 指定された映画データの変更
-// router.patch("/movie/:id", verifyToken, async (req, res) => {
-//     try {
-//         const movie = await Movie.findByIdAndUpdate(
-//             req.params.id,
-//             req.body,
-//             {
-//                 new: true,
-//                 runValidators: true
-//             }
-//         );
-//         if (!movie) return res.status(404).json("TARGET MOVIE NOT FOUND");
-//         return res.status(200).json(movie);
-//     } catch (e) {
-//         return res.status(500).json(e);
-//     }
-// });
 
 // 指定された映画データの変更
 router.patch("/movie/:id", verifyToken, async (req, res) => {
@@ -176,6 +154,5 @@ router.delete("/movie/:id", verifyToken, async (req, res) => {
         return res.status(500).json(e);
     }
 });
-
 
 module.exports = router;
