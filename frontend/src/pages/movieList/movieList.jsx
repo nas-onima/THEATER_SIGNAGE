@@ -4,6 +4,8 @@ import Topbar from "../../components/topbar/Topbar";
 import useSWR from "swr";
 import MovieListItem from "../../components/movie/MovieListItem";
 import MovieRegistrationForm from "../../components/movieRegistrationForm/MovieRegistrationForm";
+import MovieDetailsDialog from "../../components/movieDetailsDialog/MovieDetailsDialog"; // ダイアログコンポーネントをインポート
+import Dialog from "@mui/material/Dialog"; // MUIのDialogコンポーネントをインポート
 
 export default function Movies() {
   const [page, setPage] = useState(1);
@@ -13,6 +15,8 @@ export default function Movies() {
   const [onlyNotEnded, setOnlyNotEnded] = useState(0);
   const [searchQuery, setSearchQuery] = useState(""); // 検索クエリの状態を追加
   const [searchInput, setSearchInput] = useState(""); // 検索入力の状態を追加
+  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // ページ読み込み時にローカルストレージから設定項目を読み込む
   useEffect(() => {
@@ -26,6 +30,16 @@ export default function Movies() {
     if (savedSortBy) setSortBy(savedSortBy);
     if (savedOnlyNotEnded) setOnlyNotEnded(Number(savedOnlyNotEnded));
   }, []);
+
+  const handleMovieClick = (movie) => {
+    setSelectedMovie(movie);
+    setIsDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+    setSelectedMovie(null);
+  };
 
   const handleDisplayModeChange = (e) => {
     const value = e.target.value;
@@ -304,8 +318,14 @@ export default function Movies() {
               displayMode={displayMode}
               key={movie._id}
               className={styles.movie}
+              onMovieClick={handleMovieClick}
             />
           ))}
+          {selectedMovie && (
+            <Dialog open={isDialogOpen} onClose={closeDialog} fullWidth={true}>
+              <MovieDetailsDialog movie={selectedMovie} onClose={closeDialog} mutate={mutate}/>
+            </Dialog>
+          )}
           {data?.movies.length === 0 ? (
             <h2 style={{ textAlign: "center" }}>
               映画データが登録されていません

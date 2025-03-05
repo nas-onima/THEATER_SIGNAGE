@@ -4,15 +4,16 @@ import stylesForPosterView from "./MovieListItemForPosterView.module.css";
 import { fromZonedTime, format } from "date-fns-tz";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function MovieListItem({ movie, displayMode = "poster" }) {
+export default function MovieListItem({ movie, displayMode = "poster", onMovieClick }) {
   const timeZone = "Asia/Tokyo";
   const zonedDate = fromZonedTime(movie.releaseDate, timeZone);
   const formattedDate = format(zonedDate, "yyyy/MM/dd", { timeZone });
   const formattedTime = format(zonedDate, "HH:mm", { timeZone });
   const nav = useNavigate();
 
-  const handleMovieClick = async () => {
-    nav("/movie/" + movie._id);
+  const handleMovieClick = () => {
+    //nav("/movie/" + movie._id);
+    onMovieClick(movie);
   };
 
   let ratingStyle;
