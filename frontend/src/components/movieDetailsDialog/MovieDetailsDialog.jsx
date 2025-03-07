@@ -5,6 +5,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import Dialog from "@mui/material/Dialog";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { getIdTokenForSWR } from "../../hooks/useUserData";
 
 export default function MovieDetailsDialog({ movie, onClose, mutate }) {
@@ -66,6 +69,15 @@ export default function MovieDetailsDialog({ movie, onClose, mutate }) {
     }
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setEditValue(reader.result.split(",")[1]);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className={styles.dialog}>
       <div className={styles.posterField}>
@@ -115,7 +127,7 @@ export default function MovieDetailsDialog({ movie, onClose, mutate }) {
           <EditIcon
             className={styles.editIcon}
             onClick={() =>
-              handleEditClick("releaseDate", updatedMovie.releaseDate)
+              handleEditClick("releaseDate", new Date(updatedMovie.releaseDate))
             }
           />
         </h3>
@@ -126,7 +138,12 @@ export default function MovieDetailsDialog({ movie, onClose, mutate }) {
             : "未定・対象外"}
           <EditIcon
             className={styles.editIcon}
-            onClick={() => handleEditClick("endDate", updatedMovie.endDate)}
+            onClick={() =>
+              handleEditClick(
+                "endDate",
+                updatedMovie.endDate ? new Date(updatedMovie.endDate) : null
+              )
+            }
           />
         </h3>
         <h3 className={styles.detailsItem}>
@@ -136,21 +153,73 @@ export default function MovieDetailsDialog({ movie, onClose, mutate }) {
             onClick={() => handleEditClick("rating", updatedMovie.rating)}
           />
         </h3>
-        {/* <h3>上映種別: {updatedMovie.showingType.join(", ")}</h3> */}
       </div>
       <button className={styles.closeButton} onClick={handleDialogClose}>
-        閉じる
+        {hasChanges ? "保存して閉じる" : "閉じる"}
       </button>
 
       {/* 編集ダイアログ */}
-      <Dialog open={!!editField} onClose={() => setEditField(null)}>
+      <Dialog open={!!editField} onClose={handleDialogClose}>
         <div className={styles.dialogContent}>
-          <TextField
-            label={editField}
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            fullWidth
-          />
+          {editField === "releaseDate" ? (
+            <DatePicker
+              selected={editValue}
+              onChange={(date) => setEditValue(date)}
+              dateFormat="yyyy/MM/dd"
+              placeholderText="日付を選択"
+              onKeyDown={(e) => e.preventDefault()}
+              inline
+            />
+          ) : editField === "endDate" ? (
+            <>
+              <DatePicker
+                selected={editValue}
+                onChange={(date) => setEditValue(date)}
+                dateFormat="yyyy/MM/dd"
+                placeholderText="日付を選択"
+                onKeyDown={(e) => e.preventDefault()}
+                inline
+              />
+              <Button onClick={() => setEditValue("")}>未定とする</Button>
+            </>
+          ) : editField === "rating" ? (
+            <TextField
+              select
+              label={editField}
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              fullWidth
+            >
+              <MenuItem value="G">G（全年齢）</MenuItem>
+              <MenuItem value="PG12">
+                PG12（12歳未満 保護者の助言・指導必要）
+              </MenuItem>
+              <MenuItem value="R15+">R15+（15歳未満 禁止）</MenuItem>
+              <MenuItem value="R18+">R18+（18歳未満 禁止）</MenuItem>
+              <MenuItem value="">
+                レーティング対象外（LV・舞台挨拶など）
+              </MenuItem>
+            </TextField>
+          ) : editField === "image" ? (
+            <>
+              <input type="file" onChange={handleFileChange} />
+              {editValue && (
+                <img
+                  src={`data:image/png;base64,${editValue}`}
+                  alt="プレビュー"
+                  style={{ width: "100%", marginTop: "10px" }}
+                />
+              )}
+              <Button onClick={() => setEditValue("")}>画像を削除</Button>
+            </>
+          ) : (
+            <TextField
+              label={editField}
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              fullWidth
+            />
+          )}
           <Button onClick={handleSaveEdit}>OK</Button>
         </div>
       </Dialog>
@@ -159,7 +228,7 @@ export default function MovieDetailsDialog({ movie, onClose, mutate }) {
       <Dialog open={isConfirmDialogOpen} onClose={handleConfirmClose}>
         <div className={styles.dialogContent}>
           <h3>変更を保存しますか？</h3>
-          <Button onClick={handleConfirmClose}>キャンセル</Button>
+          <Button onClick={handleConfirmClose}>破棄</Button>
           <Button onClick={handleSaveChanges}>保存</Button>
         </div>
       </Dialog>

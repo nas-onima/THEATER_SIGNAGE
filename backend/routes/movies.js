@@ -56,7 +56,7 @@ router.get("/", async (req, res) => {
         const limit = parseInt(req.query.limit || "10");
         const skip = (page - 1) * limit;
         const qsortby = req.query.sortby;
-        const sortby = qsortby === "releaseDate-1" ? { releaseDate: -1 } : qsortby === "releaseDate" ? { releaseDate: 1 } : qsortby === "title-1" ? { title: -1 } : { title: 1 };
+        const sortby = qsortby === "releaseDate-1" ? { releaseDate: -1 , title: -1} : qsortby === "releaseDate" ? { releaseDate: 1, title: -1 } : qsortby === "title-1" ? { title: -1, releaseDate: -1 } : { title: 1, releaseDate: -1 };
         const notEnded = parseInt(req.query.notended);
         const searchQuery = req.query.search || "";
 

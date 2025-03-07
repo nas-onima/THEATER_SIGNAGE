@@ -7,7 +7,7 @@ import MovieRegistrationForm from "../../components/movieRegistrationForm/MovieR
 import MovieDetailsDialog from "../../components/movieDetailsDialog/MovieDetailsDialog"; // ダイアログコンポーネントをインポート
 import Dialog from "@mui/material/Dialog"; // MUIのDialogコンポーネントをインポート
 
-export default function Movies() {
+export default function MovieList() {
   const [page, setPage] = useState(1);
   const [pageLimit, setPageLimit] = useState(10);
   const [displayMode, setDisplayMode] = useState("list");
@@ -45,12 +45,15 @@ export default function Movies() {
     const value = e.target.value;
     setDisplayMode(value);
     localStorage.setItem("displayMode", value); // ローカルストレージに保存
+    setPageLimit(value === "list" ? 10 : 9);
+    setPage(1);
   };
-
+  
   const handlePageLimitChange = (e) => {
     const value = Number(e.target.value);
     setPageLimit(value);
     localStorage.setItem("pageLimit", value); // ローカルストレージに保存
+    setPage(1);
   };
 
   const handleSortByChange = (e) => {
@@ -323,7 +326,11 @@ export default function Movies() {
           ))}
           {selectedMovie && (
             <Dialog open={isDialogOpen} onClose={closeDialog} fullWidth={true}>
-              <MovieDetailsDialog movie={selectedMovie} onClose={closeDialog} mutate={mutate}/>
+              <MovieDetailsDialog
+                movie={selectedMovie}
+                onClose={closeDialog}
+                mutate={mutate}
+              />
             </Dialog>
           )}
           {data?.movies.length === 0 ? (
