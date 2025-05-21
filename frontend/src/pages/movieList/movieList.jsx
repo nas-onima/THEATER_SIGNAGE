@@ -196,7 +196,7 @@ export default function MovieList() {
     <>
       <Topbar />
       <div className={styles.movieListWrapper}>
-        <h1 className={styles.pageTitle}>上映作品管理</h1>
+        <h1 className={styles.pageTitle}>作品管理</h1>
         <MovieRegistrationForm />
         <h3>画面表示設定</h3>
         <div className={styles.listSettings}>
