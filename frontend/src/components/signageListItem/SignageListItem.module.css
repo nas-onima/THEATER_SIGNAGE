@@ -9,14 +9,14 @@
     text-overflow: ellipsis;
 }
 
-.topContainer{
-    display: flex;  
+.topContainer {
+    display: flex;
     width: 100%;
     align-items: center;
     justify-content: center;
 }
 
-.moviePosterImage{
+.moviePosterImage {
     display: flex;
     width: 50%;
     aspect-ratio: 2/3;
@@ -26,7 +26,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
 }
 
-.topLeft{
+.topLeft {
     display: flex;
-flex-direction: column;
+    flex-direction: column;
 }
