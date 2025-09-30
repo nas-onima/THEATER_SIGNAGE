@@ -9,6 +9,7 @@ import axios from "axios";
 import Register from "./pages/register/Register";
 import { useUserData } from "./hooks/useUserData";
 import Loading from "./pages/loading/Loading";
+import SignageManager from "./pages/signageManager/SignageManager";
 
 function App() {
   const { userData, isLoading, isError, mutate } = useUserData();
@@ -28,7 +29,7 @@ function App() {
         />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/register" element={<Register />} />
-        <Route exact path="/schedule" element={<Home />} />
+        <Route exact path="/signagemanager" element={<SignageManager />} />
       </Routes>
     </Router>
   );
