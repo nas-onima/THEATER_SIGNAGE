@@ -7,7 +7,7 @@ import MovieRegistrationForm from "../../components/movieRegistrationForm/MovieR
 import MovieDetailsDialog from "../../components/movieDetailsDialog/MovieDetailsDialog"; // ダイアログコンポーネントをインポート
 import Dialog from "@mui/material/Dialog"; // MUIのDialogコンポーネントをインポート
 
-export default function MovieList() {
+export default function MovieList({ movieListMode = "management" }) {
   const [page, setPage] = useState(1);
   const [pageLimit, setPageLimit] = useState(10);
   const [displayMode, setDisplayMode] = useState("list");
@@ -48,7 +48,7 @@ export default function MovieList() {
     setPageLimit(value === "list" ? 10 : 9);
     setPage(1);
   };
-  
+
   const handlePageLimitChange = (e) => {
     const value = Number(e.target.value);
     setPageLimit(value);
@@ -192,12 +192,223 @@ export default function MovieList() {
     fetchMovies
   );
 
-  return (
-    <>
-      <Topbar />
+  if (movieListMode === "management") {
+    return (
+      <>
+        <Topbar />
+        <div className={styles.movieListWrapper}>
+          <h1 className={styles.pageTitle}>作品管理</h1>
+          <MovieRegistrationForm />
+          <h3>画面表示設定</h3>
+          <div className={styles.listSettings}>
+            <div className={styles.listSettingsItem}>
+              表示数:
+              <select value={pageLimit} onChange={handlePageLimitChange}>
+                {displayMode === "list" ? (
+                  <>
+                    <option key={1} value={10}>
+                      10
+                    </option>
+                    <option key={2} value={20}>
+                      20
+                    </option>
+                    <option key={3} value={50}>
+                      50
+                    </option>
+                    <option key={4} value={100}>
+                      100
+                    </option>
+                  </>
+                ) : (
+                  <>
+                    <option key={1} value={9}>
+                      9
+                    </option>
+                    <option key={2} value={18}>
+                      18
+                    </option>
+                    <option key={3} value={45}>
+                      45
+                    </option>
+                    <option key={4} value={99}>
+                      99
+                    </option>
+                  </>
+                )}
+              </select>
+            </div>
+            <div className={styles.listSettingsItem}>
+              表示モード:
+              <select value={displayMode} onChange={handleDisplayModeChange}>
+                <option key={1} value={"list"}>
+                  リスト
+                </option>
+                <option key={2} value={"poster"}>
+                  ポスター
+                </option>
+              </select>
+            </div>
+            <div className={styles.listSettingsItem}>
+              表示順:
+              <select value={sortBy} onChange={handleSortByChange}>
+                <option key={1} value={"releaseDate-1"}>
+                  公開日（降順）
+                </option>
+                <option key={2} value={"releaseDate"}>
+                  公開日（昇順）
+                </option>
+                <option key={3} value={"title-1"}>
+                  タイトル（降順）
+                </option>
+                <option key={4} value={"title"}>
+                  タイトル（昇順）
+                </option>
+              </select>
+            </div>
+            <div className={styles.listSettingsItem}>
+              上映終了作品:
+              <select value={onlyNotEnded} onChange={handleOnlyNotEndedChange}>
+                <option key={1} value={0}>
+                  表示する
+                </option>
+                <option key={2} value={1}>
+                  表示しない
+                </option>
+              </select>
+            </div>
+            <div className={styles.searchArea}>
+              検索:
+              <input
+                type="text"
+                value={searchInput}
+                onChange={handleSearchInputChange}
+                placeholder="タイトルで検索"
+              />
+              <button onClick={handleSearch} className={styles.searchButton}>
+                検索
+              </button>
+            </div>
+          </div>
+          <div className={styles.pageSelector}>
+            <div className={styles.leftArrow} onClick={handleLeftArrowClick}>
+              &#9664;
+            </div>
+            <div className={styles.pageSelectorNums}>
+              {generatePageSelector()}
+            </div>
+            <div className={styles.rightArrow} onClick={handleRightArrowClick}>
+              &#9654;
+            </div>
+          </div>
+          <div
+            className={styles.listItemArea}
+            style={
+              displayMode === "list"
+                ? {
+                    flexDirection: "column",
+                  }
+                : displayMode === "poster"
+                ? {
+                    flexDirection: "row",
+                  }
+                : {
+                    display: "none",
+                  }
+            }
+          >
+            {data?.movies.map((movie) => (
+              <MovieListItem
+                movie={movie}
+                displayMode={displayMode}
+                key={movie._id}
+                className={styles.movie}
+                onMovieClick={handleMovieClick}
+              />
+            ))}
+            {selectedMovie && (
+              <Dialog
+                open={isDialogOpen}
+                onClose={closeDialog}
+                fullWidth={true}
+              >
+                <MovieDetailsDialog
+                  movie={selectedMovie}
+                  onClose={closeDialog}
+                  mutate={mutate}
+                />
+              </Dialog>
+            )}
+            {data?.movies.length === 0 ? (
+              <h2 style={{ textAlign: "center" }}>
+                映画データが登録されていません
+              </h2>
+            ) : data ? (
+              <h3 style={{ textAlign: "center" }}>
+                {data.movies.length + data.pageSize * (data.page - 1)}作品/
+                {data.total}作品中
+              </h3>
+            ) : isLoading ? (
+              <h2 style={{ textAlign: "center" }}>読み込み中・・・</h2>
+            ) : (
+              <h2 style={{ textAlign: "center" }}>
+                映画データの取得に失敗しました
+              </h2>
+            )}
+          </div>
+          <div className={styles.pageSelector}>
+            <div className={styles.leftArrow} onClick={handleLeftArrowClick}>
+              &#9664;
+            </div>
+            <div className={styles.pageSelectorNums}>
+              {generatePageSelector()}
+            </div>
+            <div className={styles.rightArrow} onClick={handleRightArrowClick}>
+              &#9654;
+            </div>
+          </div>
+          <div className={styles.limitSelector}>
+            表示数:
+            <select value={pageLimit} onChange={handlePageLimitChange}>
+              {displayMode === "list" ? (
+                <>
+                  <option key={1} value={10}>
+                    10
+                  </option>
+                  <option key={2} value={20}>
+                    20
+                  </option>
+                  <option key={3} value={50}>
+                    50
+                  </option>
+                  <option key={4} value={100}>
+                    100
+                  </option>
+                </>
+              ) : (
+                <>
+                  <option key={1} value={9}>
+                    9
+                  </option>
+                  <option key={2} value={18}>
+                    18
+                  </option>
+                  <option key={3} value={45}>
+                    45
+                  </option>
+                  <option key={4} value={99}>
+                    99
+                  </option>
+                </>
+              )}
+            </select>
+          </div>
+        </div>
+      </>
+    );
+  } else if (movieListMode === "selection") {
+    return (
       <div className={styles.movieListWrapper}>
-        <h1 className={styles.pageTitle}>作品管理</h1>
-        <MovieRegistrationForm />
+        <h1 className={styles.pageTitle}>作品選択</h1>
         <h3>画面表示設定</h3>
         <div className={styles.listSettings}>
           <div className={styles.listSettingsItem}>
@@ -398,6 +609,6 @@ export default function MovieList() {
           </select>
         </div>
       </div>
-    </>
-  );
+    );
+  }
 }

@@ -20,6 +20,24 @@ const signageStatusSchema = new mongoose.Schema({
     description: {
         type: String,
         default: null,
+    },
+    titleOverride:{
+        type: String,
+        default: null,
+    },
+    showingType:{
+        type: Object,
+        default: {
+            sub: false,
+            dub: false,
+            jsub: false,
+            fourK: false,
+            threeD: false,
+            cheer: false,
+            live: false,
+            greeting: false,
+            greetingLive: false,
+        }
     }
 }, {
     timestamps: true

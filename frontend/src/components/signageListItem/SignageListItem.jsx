@@ -3,25 +3,16 @@ import styles from "./SignageListItem.module.css";
 import useSWR from "swr";
 
 export default function SignageListItem({ signage, onSignageClick }) {
-  let ratingStyle;
-  if (signage.movie) {
-    if (signage.movie.rating === "G") {
-      ratingStyle = { borderLeft: "5px solid green" };
-    } else if (signage.movie.rating === "PG12") {
-      ratingStyle = { borderLeft: "5px solid blue" };
-    } else if (signage.movie.rating === "R15+") {
-      ratingStyle = { borderLeft: "5px solid magenta" };
-    } else if (signage.movie.rating === "R18+") {
-      ratingStyle = { borderLeft: "5px solid red" };
-    } else {
-      ratingStyle = { borderLeft: "5px solid gray", marginRight: "10px" };
-    }
+  
+  const handleSignageClick = () => {
+    onSignageClick(signage);
   }
 
   return (
-    <div className={styles.signageListItem}>
-      <div className={styles.pubDate}>
-        シアター{signage.theaterId}
+    <div className={styles.signageListItem} onClick={handleSignageClick}>
+      <div className={styles.theaterNumber}>
+        <div className={styles.theaterLabel}>シアター</div>
+        <div className={styles.theaterNumberText}>{signage.theaterId}</div>
       </div>
       {signage.movie && signage.movie.image ? (
         <img
@@ -33,7 +24,7 @@ export default function SignageListItem({ signage, onSignageClick }) {
         <div
           className={styles.moviePosterImage}
           style={{
-            height: "95%",
+            height: "100%",
             aspectRatio: "2/3",
             backgroundColor: "grey",
             overflow: "hidden",
@@ -48,13 +39,91 @@ export default function SignageListItem({ signage, onSignageClick }) {
       <div className={styles.description}>
         <div className={styles.title}>
           {signage.movie && signage.movie.rating ? (
-            <span className={styles.rating} style={ratingStyle}>
+            <span className={styles.rating}>
+              {!signage.isConnected ? (
+                <span
+                  className={styles.statusIndicator}
+                  title="オフライン"
+                  style={{ "backgroundColor": "#dc3545" }}
+                >
+                  !
+                </span>
+              ) : (
+                <span
+                  className={styles.statusIndicator}
+                  title="オフライン"
+                  style={{ "backgroundColor": "#009e15ff" }}
+                ></span>
+              )}
               【{signage.movie.rating}】
+              {signage.titleOverride ||
+                (signage.movie
+                  ? signage.movie.title || "NO TITLE"
+                  : "NOT SELECTED")}
             </span>
           ) : (
-            <span className={styles.rating} style={ratingStyle}>【-】</span>
+            <span className={styles.rating}>
+              {!signage.isConnected ? (
+                <span
+                  className={styles.statusIndicator}
+                  title="オフライン"
+                  style={{ "backgroundColor": "#dc3545" }}
+                >
+                  !
+                </span>
+              ) : (
+                <span
+                  className={styles.statusIndicator}
+                  title="オフライン"
+                  style={{ "backgroundColor": "#009e15ff" }}
+                ></span>
+              )}
+              【-】
+              {signage.titleOverride ||
+                (signage.movie
+                  ? signage.movie.title || "NO TITLE"
+                  : "NOT SELECTED")}
+            </span>
           )}
-          {signage.movie ? signage.movie.title || "NO TITLE" : "NOT SELECTED"}
+        </div>
+        <hr className={styles.horizontalBar} />
+        <div className={styles.showingTypeLabelText}>上映種別</div>
+        <div className={styles.showingTypeField}>
+          {Object.values(signage.showingType).some(Boolean) ? (
+            <>
+              {signage.showingType.sub && (
+                <div className={styles.showingTypeStatus}>字幕版</div>
+              )}
+              {signage.showingType.dub && (
+                <div className={styles.showingTypeStatus}>吹替版</div>
+              )}
+              {signage.showingType.jsub && (
+                <div className={styles.showingTypeStatus}>日本語字幕版</div>
+              )}
+              {signage.showingType.fourK && (
+                <div className={styles.showingTypeStatus}>4K</div>
+              )}
+              {signage.showingType.threeD && (
+                <div className={styles.showingTypeStatus}>3D</div>
+              )}
+              {signage.showingType.cheer && (
+                <div className={styles.showingTypeStatus}>応援上映</div>
+              )}
+              {signage.showingType.live && (
+                <div className={styles.showingTypeStatus}>LV</div>
+              )}
+              {signage.showingType.greeting && (
+                <div className={styles.showingTypeStatus}>舞台挨拶</div>
+              )}
+              {signage.showingType.greetingLive && (
+                <div className={styles.showingTypeStatus}>舞台挨拶中継</div>
+              )}
+            </>
+          ) : (
+            <div className={styles.showingTypeStatus}>
+              通常上映（上映種別指定なし）
+            </div>
+          )}
         </div>
       </div>
       {/* <div className={styles.signageListItemWrapper}>
