@@ -1,0 +1,80 @@
+[{
+  "_id": {
+    "$oid": "68dbf766d6ff1f732aa276e2"
+  },
+  "theaterId": "1",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "68dbdb7dfc97346906a52c63",
+  "description": ""
+},
+{
+  "_id": {
+    "$oid": "68dbf8ffd6ff1f732aa276e5"
+  },
+  "theaterId": "2",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": ""
+},
+{
+  "_id": {
+    "$oid": "68dbf90dd6ff1f732aa276e6"
+  },
+  "theaterId": "3",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": ""
+},
+{
+  "_id": {
+    "$oid": "68dbf912d6ff1f732aa276e7"
+  },
+  "theaterId": "4",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": ""
+},
+{
+  "_id": {
+    "$oid": "68dbf916d6ff1f732aa276e8"
+  },
+  "theaterId": "5",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": ""
+},
+{
+  "_id": {
+    "$oid": "68dbf91cd6ff1f732aa276e9"
+  },
+  "theaterId": "6",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": ""
+},
+{
+  "_id": {
+    "$oid": "68dbf921d6ff1f732aa276ea"
+  },
+  "theaterId": "7",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": ""
+},
+{
+  "_id": {
+    "$oid": "68dbf927d6ff1f732aa276eb"
+  },
+  "theaterId": "8",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": ""
+}]

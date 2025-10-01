@@ -1,32 +1,60 @@
 .signageListItem {
     display: flex;
-    flex-direction: column;
-    background-color: rgb(0, 204, 255);
-    width: 23%;
-    height: 100%;
+    justify-content: start;
+    align-items: center;
+    padding: 5px;
+    background-color: rgb(216, 240, 241);
+    border: solid 1px black;
+    border-radius: 5px;
+    height: 100px;
+    width: 45vw;
+    transition: all .2s;
     margin: 10px;
-    border-radius: 10px;
+}
+
+.signageListItem:hover {
+    transform: scale(1.01);
+}
+
+
+.pubDate {
+    display: flex;
+    border-radius: 5px;
+    flex-direction: column;
+    background-color: rgb(39, 39, 39);
+    align-items: center;
+    padding: 5px;
+    white-space: nowrap;
+    font-weight: bolder;
+    color: white;
+}
+
+.description {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    width: 60%;
+}
+
+.title {
+    width: 100%;
+    font-weight: 500;
+    margin-left: 6px;
+    padding-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: left;
     text-overflow: ellipsis;
 }
 
-.topContainer {
+.listSettings {
     display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row;
 }
 
 .moviePosterImage {
-    display: flex;
-    width: 50%;
-    aspect-ratio: 2/3;
-    object-fit: contain;
-    border-radius: 10px;
-    background-color: rgb(80, 80, 80);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
-}
-
-.topLeft {
-    display: flex;
-    flex-direction: column;
+    border-radius: 5px;
+    height: 95%;
+    margin-left: 10px;
+    margin-right: 0;
 }
