@@ -200,12 +200,12 @@ export default function SignageDetailsDialog({
                   disabled={isUpdating}
                   className={styles.removeButton}
                 >
-                  映画を削除
+                  セット解除
                 </Button>
               </div>
             ) : (
               <div className={styles.noMovieSelected}>
-                映画が設定されていません
+                未設定
               </div>
             )}
           </div>
