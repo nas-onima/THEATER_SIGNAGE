@@ -1,0 +1,63 @@
+.signageManagerWrapper {
+    margin: 0 auto;
+    margin-top: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+}
+
+.pageTitle {
+    margin-top: 0px;
+    text-align: center;
+}
+
+.signageList {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100%;
+    flex-wrap: wrap;
+}
+
+.movieSelectDialog{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loadingIcon {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+@media only screen and (max-width: 1199px) {
+    /* タブレット (landscape) */
+}
+
+@media only screen and (max-width: 767px) {
+    /* タブレット (portrait) */
+}
+
+@media only screen and (max-width: 520px) {
+
+    /* スマホ */
+    .pageSelector {
+        flex-wrap: wrap;
+    }
+
+    .leftArrow,
+    .rightArrow {
+        display: none;
+    }
+
+}

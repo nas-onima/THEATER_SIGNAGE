@@ -4,6 +4,7 @@ import SchedulePanel from "../../components/schedulePanel/SchedulePanel";
 import styles from "./Home.module.css";
 import Login from "../login/Login";
 import { useUserData } from "../../hooks/useUserData";
+import MovieList from "../movieList/movieList";
 
 export default function Home() {
   const { userData, isLoading, isError } = useUserData();
@@ -12,7 +13,7 @@ export default function Home() {
     <>
       <Topbar />
       <div className={styles.homeContainer}>
-        <SchedulePanel />
+        <MovieList />
       </div>
     </>
   );

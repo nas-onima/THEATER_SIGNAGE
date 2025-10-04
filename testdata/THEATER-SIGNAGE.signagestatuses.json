@@ -1,0 +1,168 @@
+[{
+  "_id": {
+    "$oid": "68dcce5fe484dddf5832353b"
+  },
+  "theaterId": "1",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": "",
+  "showingType": {
+    "sub": false,
+    "dub": false,
+    "jsub": false,
+    "fourK": false,
+    "threeD": false,
+    "cheer": false,
+    "live": false,
+    "greeting": false,
+    "greetingLive": false
+  }
+},
+{
+  "_id": {
+    "$oid": "68dccefae484dddf58323543"
+  },
+  "theaterId": "2",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": "",
+  "showingType": {
+    "sub": false,
+    "dub": false,
+    "jsub": false,
+    "fourK": false,
+    "threeD": false,
+    "cheer": false,
+    "live": false,
+    "greeting": false,
+    "greetingLive": false
+  }
+},
+{
+  "_id": {
+    "$oid": "68dccf05e484dddf58323544"
+  },
+  "theaterId": "3",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": "",
+  "showingType": {
+    "sub": false,
+    "dub": false,
+    "jsub": false,
+    "fourK": false,
+    "threeD": false,
+    "cheer": false,
+    "live": false,
+    "greeting": false,
+    "greetingLive": false
+  }
+},
+{
+  "_id": {
+    "$oid": "68dccf0ce484dddf58323545"
+  },
+  "theaterId": "4",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": "",
+  "showingType": {
+    "sub": false,
+    "dub": false,
+    "jsub": false,
+    "fourK": false,
+    "threeD": false,
+    "cheer": false,
+    "live": false,
+    "greeting": false,
+    "greetingLive": false
+  }
+},
+{
+  "_id": {
+    "$oid": "68dccf19e484dddf58323546"
+  },
+  "theaterId": "5",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": "",
+  "showingType": {
+    "sub": false,
+    "dub": false,
+    "jsub": false,
+    "fourK": false,
+    "threeD": false,
+    "cheer": false,
+    "live": false,
+    "greeting": false,
+    "greetingLive": false
+  }
+},
+{
+  "_id": {
+    "$oid": "68dccf2fe484dddf58323547"
+  },
+  "theaterId": "6",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": "",
+  "showingType": {
+    "sub": false,
+    "dub": false,
+    "jsub": false,
+    "fourK": false,
+    "threeD": false,
+    "cheer": false,
+    "live": false,
+    "greeting": false,
+    "greetingLive": false
+  }
+},
+{
+  "_id": {
+    "$oid": "68dccf3ee484dddf58323548"
+  },
+  "theaterId": "7",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": "",
+  "showingType": {
+    "sub": false,
+    "dub": false,
+    "jsub": false,
+    "fourK": false,
+    "threeD": false,
+    "cheer": false,
+    "live": false,
+    "greeting": false,
+    "greetingLive": false
+  }
+},
+{
+  "_id": {
+    "$oid": "68dccf44e484dddf58323549"
+  },
+  "theaterId": "8",
+  "socketId": "",
+  "isConnected": false,
+  "movieId": "",
+  "description": "",
+  "showingType": {
+    "sub": false,
+    "dub": false,
+    "jsub": false,
+    "fourK": false,
+    "threeD": false,
+    "cheer": false,
+    "live": false,
+    "greeting": false,
+    "greetingLive": false
+  }
+}]

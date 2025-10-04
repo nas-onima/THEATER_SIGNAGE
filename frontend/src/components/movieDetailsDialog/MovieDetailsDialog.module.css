@@ -1,0 +1,80 @@
+/* MovieDetailsDialog.module.css */
+.dialog {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  flex-wrap: wrap;
+  overflow-wrap: anywhere; 
+  word-break: normal;
+  line-break: strict;
+}
+
+.posterField{
+  width: 50%;
+  position:relative;
+}
+
+.detailsField{
+  width: 48%;
+  padding-left: 10px;
+}
+
+.moviePosterImage {
+  
+  display: block;
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: contain;
+  border-radius: 10px;
+  background-color: rgb(80, 80, 80);
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25); */
+}
+
+.detailsItem{
+  display: flex;
+  align-items: center;
+}
+
+.editIcon{
+  color: aliceblue;
+  background-color: rgb(107, 111, 112);
+  padding: 3px;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  transition: all .1s;
+  margin-left: 10px;
+}
+.editIcon:hover{
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
+}
+
+.dialogContent {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialogContent > * {
+  margin: 10px 0;
+}
+
+.closeButton{
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  transition: all .1s;
+}
+.closeButton:hover{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
+  cursor: pointer;
+}

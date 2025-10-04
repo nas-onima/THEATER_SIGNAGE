@@ -1,0 +1,128 @@
+.signageListItem {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding: 5px;
+    background-color: rgb(232, 241, 216);
+    border: solid 1px black;
+    border-radius: 5px;
+    height: 150px;
+    width: 45vw;
+    min-width: 400px;
+    max-width: 100%;
+    transition: all .2s;
+    margin: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.signageListItem:hover {
+    transform: scale(1.01);
+}
+
+.theaterNumber {
+    height: 95%;
+    display: flex;
+    border-radius: 5px;
+    flex-direction: column;
+    background-color: rgb(39, 39, 39);
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    white-space: nowrap;
+    font-weight: bolder;
+    color: white;
+    flex-shrink: 0;
+    min-width: 80px;
+}
+
+.theaterNumberText {
+    font-size: xx-large;
+    font-weight: bolder;
+}
+
+.description {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    height: 90%;
+    margin-left: 10px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    width: 100%;
+    font-weight: bolder;
+    font-size: larger;
+    margin-left: 6px;
+    padding-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: left;
+    text-overflow: ellipsis;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.horizontalBar {
+    width: 100%;
+    border: none;
+    border-top: 1px solid gray;
+    margin: 5px 0;
+}
+
+.showingTypeLabelText {
+    align-self: flex-start;
+    margin-left: 0;
+    font-weight: bolder;
+    font-size: medium;
+}
+
+.showingTypeField {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    width: 100%;
+    height: 50%;
+    flex-wrap: wrap;
+    margin: 5px;
+}
+
+.showingTypeStatus {
+    margin: 0px 5px;
+    background-color: rgb(19, 18, 78);
+    color: white;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.moviePosterImage {
+    border-radius: 5px;
+    height: 100%;
+    margin-left: 10px;
+    margin-right: 0;
+    text-align: center;
+    flex-shrink: 0;
+    aspect-ratio: 2/3;
+}
+
+.statusIndicator {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-right: 0px;
+    vertical-align: middle;
+}

@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const { now } = require("mongoose");
 const Movie = require("../models/Movie");
 const { verifyToken } = require("./middleware");
 const multer = require("multer");
@@ -9,20 +10,44 @@ const upload = multer({ storage: storage });
 // 映画データの登録
 router.post("/register", verifyToken, async (req, res) => {
     try {
-        const newMovie = await new Movie({
-            title: req.body.title,
-            image: req.body.image || "",
-            rating: req.body.rating || "g",
-            showingType: req.body.showingType || []
+        let movieData = { ...req.body }; // リクエストデータをコピー
+        let unsetFields = {};
+
+        // `null` が指定されたフィールドを削除対象にする
+        Object.keys(movieData).forEach(key => {
+            if (movieData[key] === null) {
+                unsetFields[key] = "";
+                delete movieData[key]; // 通常の登録データからも除外
+            }
         });
 
-        const user = await newMovie.save();
-        return res.status(200).json(user);
+        // 映画データを作成
+        const newMovie = new Movie({
+            title: movieData.title,
+            image: movieData.image || "",
+            rating: movieData.rating,
+            showingType: movieData.showingType || [],
+            releaseDate: movieData.releaseDate,
+            endDate: movieData.endDate,
+        });
+
+        // 登録
+        const savedMovie = await newMovie.save();
+
+        // `null` 指定のフィールドを削除（もしあれば）
+        if (Object.keys(unsetFields).length > 0) {
+            await Movie.updateOne(
+                { _id: savedMovie._id },
+                { $unset: unsetFields }
+            );
+        }
+
+        return res.status(200).json(savedMovie);
     } catch (e) {
         console.log(e);
         return res.status(500).json(e);
     }
-})
+});
 
 // 複数件の映画データ取得（ページネーション対応）
 router.get("/", async (req, res) => {
@@ -30,9 +55,48 @@ router.get("/", async (req, res) => {
         const page = parseInt(req.query.page || "1");
         const limit = parseInt(req.query.limit || "10");
         const skip = (page - 1) * limit;
+        const qsortby = req.query.sortby;
+        const sortby = qsortby === "releaseDate-1" ? { releaseDate: -1, title: -1 } : qsortby === "releaseDate" ? { releaseDate: 1, title: -1 } : qsortby === "title-1" ? { title: -1, releaseDate: -1 } : { title: 1, releaseDate: -1 };
+        const notEnded = parseInt(req.query.notended);
+        const searchQuery = req.query.search || "";
 
-        const movies = await Movie.find().limit(limit).skip(skip).sort({ updatedAt: -1 });
-        const totalMovies = await Movie.countDocuments();
+        let query = {};
+
+        if (notEnded) {
+            const now = new Date();
+            // 今日の開始時刻（00:00:00）
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+            query = {
+                $and: [
+                    // 公開日が今日以前（公開済み）
+                    {
+                        $or: [
+                            { releaseDate: { $lte: todayStart } },
+                            { releaseDate: { $exists: false } }
+                        ]
+                    },
+                    // 終了日が今日以降（終了していない）
+                    {
+                        $or: [
+                            { endDate: { $gte: todayStart } },
+                            { endDate: { $exists: false } }
+                        ]
+                    },
+                    // 検索条件
+                    { title: { $regex: searchQuery, $options: "i" } }
+                ]
+            };
+        } else {
+            query = { title: { $regex: searchQuery, $options: "i" } };
+        }
+
+        const movies = await Movie.find(query)
+            .limit(limit)
+            .skip(skip)
+            .sort(sortby);
+
+        const totalMovies = await Movie.countDocuments(query);
 
         return res.status(200).json({
             total: totalMovies,
@@ -43,10 +107,10 @@ router.get("/", async (req, res) => {
     } catch (e) {
         return res.status(500).json(e);
     }
-})
+});
 
-// 指定された映画データ取得
-router.get("/:id", async (req, res) => {
+// 指定された映画データの取得
+router.get("/movie/:id", async (req, res) => {
     try {
         const movie = await Movie.findById(req.params.id);
         if (!movie) return res.status(404).json("MOVIE NOT FOUND");
@@ -57,16 +121,34 @@ router.get("/:id", async (req, res) => {
 });
 
 // 指定された映画データの変更
-router.patch("/:id", verifyToken, async (req, res) => {
+router.patch("/movie/:id", verifyToken, async (req, res) => {
     try {
+        const updateData = { ...req.body }; // リクエストデータをコピー
+        const unsetFields = {};
+
+        // 特定のキーが null の場合、そのフィールドを削除する
+        Object.keys(req.body).forEach(key => {
+            if (req.body[key] === null) {
+                unsetFields[key] = "";
+                delete updateData[key]; // 通常の更新データから除外
+            }
+        });
+
+        // 更新クエリを作成
+        const updateQuery = {
+            $set: updateData,      // 通常の更新データ
+            ...(Object.keys(unsetFields).length > 0 && { $unset: unsetFields }) // 削除するフィールド
+        };
+
         const movie = await Movie.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            updateQuery,
             {
                 new: true,
                 runValidators: true
             }
         );
+
         if (!movie) return res.status(404).json("TARGET MOVIE NOT FOUND");
         return res.status(200).json(movie);
     } catch (e) {
@@ -75,7 +157,7 @@ router.patch("/:id", verifyToken, async (req, res) => {
 });
 
 // 指定された映画データの削除
-router.delete("/:id", verifyToken, async (req, res) => {
+router.delete("/movie/:id", verifyToken, async (req, res) => {
     try {
         const movie = await Movie.findByIdAndDelete(req.params.id);
         if (!movie) res.status(404).json("TARGET MOVIE NOT FOUND");
@@ -84,6 +166,5 @@ router.delete("/:id", verifyToken, async (req, res) => {
         return res.status(500).json(e);
     }
 });
-
 
 module.exports = router;

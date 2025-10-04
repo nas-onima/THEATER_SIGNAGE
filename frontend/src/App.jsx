@@ -9,6 +9,8 @@ import axios from "axios";
 import Register from "./pages/register/Register";
 import { useUserData } from "./hooks/useUserData";
 import Loading from "./pages/loading/Loading";
+import SignageManager from "./pages/signageManager/SignageManager";
+import Signage from "./pages/signage/Signage";
 
 function App() {
   const { userData, isLoading, isError, mutate } = useUserData();
@@ -17,18 +19,17 @@ function App() {
     <Router>
       <Routes>
         <Route
-          exact
           path="/"
           element={userData ? <Home /> : isLoading ? <Loading /> : <Login />}
         />
         <Route
-          exact
           path="/home"
           element={userData ? <Home /> : isLoading ? <Loading /> : <Login />}
         />
-        <Route exact path="/login" element={<Login />} />
-        <Route exact path="/register" element={<Register />} />
-        <Route exact path="/schedule" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/signagemanager" element={<SignageManager />} />
+        <Route path="/signage/:id" element={<Signage/>} />
       </Routes>
     </Router>
   );
