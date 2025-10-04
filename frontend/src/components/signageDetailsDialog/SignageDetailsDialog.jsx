@@ -8,6 +8,9 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
 import { getIdTokenForSWR } from "../../hooks/useUserData";
 import MovieSelectionList from "../movieSelectionList/MovieSelectionList";
 
@@ -18,6 +21,8 @@ export default function SignageDetailsDialog({
   mutate,
 }) {
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [titleOverride, setTitleOverride] = useState("");
+  const [titleOverrideEditing, setTitleOverrideEditing] = useState(false);
   const [showingType, setShowingType] = useState({
     sub: false,
     dub: false,
@@ -34,6 +39,7 @@ export default function SignageDetailsDialog({
   useEffect(() => {
     if (signage) {
       setSelectedMovie(signage.movie || null);
+      setTitleOverride(signage.titleOverride || "");
       setShowingType(
         signage.showingType || {
           sub: false,
@@ -80,6 +86,7 @@ export default function SignageDetailsDialog({
           },
           body: JSON.stringify({
             movieId: selectedMovie._id,
+            titleOverride: titleOverride.trim() || null,
             showingType: showingType,
           }),
         }
@@ -113,6 +120,7 @@ export default function SignageDetailsDialog({
           },
           body: JSON.stringify({
             movieId: null,
+            titleOverride: null,
             showingType: {
               sub: false,
               dub: false,
@@ -146,6 +154,7 @@ export default function SignageDetailsDialog({
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth scroll="body">
       <DialogTitle>
         シアター{signage?.theaterId} サイネージ設定
+        <span className={styles.connectionStatus}>(id: {signage._id})</span>
         {signage && (
           <span className={styles.connectionStatus}>
             ({signage.isConnected ? "オンライン" : "オフライン"})
@@ -179,8 +188,59 @@ export default function SignageDetailsDialog({
                           【{selectedMovie.rating}】
                         </span>
                       )}
-                      {selectedMovie.title}
+                      <span className={styles.titleContainer}>
+                        {titleOverride || selectedMovie.title}
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            setTitleOverrideEditing(!titleOverrideEditing)
+                          }
+                          className={styles.editIcon}
+                          title="タイトルをカスタマイズ"
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                        {titleOverride && (
+                          <span className={styles.overrideIndicator}>
+                            カスタムタイトルが設定されています
+                          </span>
+                        )}
+                      </span>
                     </div>
+                    {titleOverrideEditing && (
+                      <div className={styles.titleOverrideEditContainer}>
+                        <TextField
+                          label="カスタムタイトル"
+                          placeholder="空欄の場合は元のタイトルを使用"
+                          value={titleOverride}
+                          onChange={(e) => setTitleOverride(e.target.value)}
+                          size="small"
+                          variant="outlined"
+                          className={styles.titleOverrideField}
+                          helperText="特別上映やイベント時のカスタムタイトル"
+                        />
+                        <div className={styles.titleEditActions}>
+                          <Button
+                            size="small"
+                            onClick={() => {
+                              setTitleOverride("");
+                              setTitleOverrideEditing(false);
+                            }}
+                            disabled={isUpdating}
+                          >
+                            クリア
+                          </Button>
+                          <Button
+                            size="small"
+                            variant="contained"
+                            onClick={() => setTitleOverrideEditing(false)}
+                            disabled={isUpdating}
+                          >
+                            完了
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                     {selectedMovie.duration && (
                       <div className={styles.movieDetail}>
                         上映時間: {selectedMovie.duration}分

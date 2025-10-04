@@ -81,6 +81,51 @@
   color: #333;
 }
 
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.editIcon {
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.editIcon:hover {
+  opacity: 1;
+}
+
+.overrideIndicator {
+  font-size: 11px;
+  color: #ff9800;
+  background-color: #fff3e0;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: normal;
+  margin-left: 4px;
+}
+
+.titleOverrideEditContainer {
+  margin-top: 12px;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+}
+
+.titleOverrideField {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.titleEditActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
 .rating {
   color: #d32f2f;
   margin-right: 8px;

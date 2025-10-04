@@ -55,7 +55,17 @@ router.get("/:id", async (req, res) => {
     try {
         const signage = await SignageStatus.findById(req.params.id);
         if (!signage) return res.status(404).json("SIGNAGE NOT FOUND(id:" + req.params.id + ")");
-        return res.status(200).json(signage);
+
+        // movie情報を付与
+        const signageObj = signage.toObject();
+        if (signageObj.movieId) {
+            const movie = await Movie.findById(signageObj.movieId);
+            signageObj.movie = movie;
+        } else {
+            signageObj.movie = null;
+        }
+
+        return res.status(200).json(signageObj);
     } catch (error) {
         return res.status(500).json(error);
     }

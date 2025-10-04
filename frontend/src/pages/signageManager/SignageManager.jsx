@@ -35,8 +35,7 @@ function SignageManager() {
 
   const { data, error, isLoading, mutate, isValidating } = useSWR(
     `http://localhost:5000/api/signages`,
-    fetchSignages,
-    {refreshInterval: 5000}
+    fetchSignages
   );
 
   return (

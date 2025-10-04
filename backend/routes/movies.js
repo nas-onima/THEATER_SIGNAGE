@@ -56,22 +56,34 @@ router.get("/", async (req, res) => {
         const limit = parseInt(req.query.limit || "10");
         const skip = (page - 1) * limit;
         const qsortby = req.query.sortby;
-        const sortby = qsortby === "releaseDate-1" ? { releaseDate: -1 , title: -1} : qsortby === "releaseDate" ? { releaseDate: 1, title: -1 } : qsortby === "title-1" ? { title: -1, releaseDate: -1 } : { title: 1, releaseDate: -1 };
+        const sortby = qsortby === "releaseDate-1" ? { releaseDate: -1, title: -1 } : qsortby === "releaseDate" ? { releaseDate: 1, title: -1 } : qsortby === "title-1" ? { title: -1, releaseDate: -1 } : { title: 1, releaseDate: -1 };
         const notEnded = parseInt(req.query.notended);
         const searchQuery = req.query.search || "";
 
         let query = {};
 
         if (notEnded) {
-            const now = new Date(); // 現在の日時を取得
+            const now = new Date();
+            // 今日の開始時刻（00:00:00）
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
             query = {
                 $and: [
+                    // 公開日が今日以前（公開済み）
                     {
                         $or: [
-                            { endDate: { $gte: now } },
+                            { releaseDate: { $lte: todayStart } },
+                            { releaseDate: { $exists: false } }
+                        ]
+                    },
+                    // 終了日が今日以降（終了していない）
+                    {
+                        $or: [
+                            { endDate: { $gte: todayStart } },
                             { endDate: { $exists: false } }
                         ]
                     },
+                    // 検索条件
                     { title: { $regex: searchQuery, $options: "i" } }
                 ]
             };
