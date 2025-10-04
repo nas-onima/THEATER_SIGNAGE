@@ -84,6 +84,25 @@ router.patch("/:id", async (req, res) => {
             }
         );
         if (!signage) return res.status(404).json("TARGET SIGNAGE NOT FOUND");
+
+        // Socket.IO通知を送信
+        const io = req.app.get('socketio');
+        if (io && signage.socketId && signage.isConnected) {
+            // 更新されたサイネージデータを取得（movie情報付き）
+            const signageObj = signage.toObject();
+            if (signageObj.movieId) {
+                const Movie = require("../models/Movie");
+                const movie = await Movie.findById(signageObj.movieId);
+                signageObj.movie = movie;
+            } else {
+                signageObj.movie = null;
+            }
+
+            // 対象のサイネージにのみ更新通知を送信
+            io.to(signage.socketId).emit('signage-data-updated', signageObj);
+            console.log(`シアター${signage.theaterId}に更新通知を送信しました`);
+        }
+
         return res.status(200).json(signage);
     } catch (error) {
         return res.status(500).json(error);

@@ -1,13 +1,15 @@
 .movieListWrapper {
-    margin-top: 10px;
+    margin: 60px auto 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 80%;
+    max-width: 1200px;
+    text-align: center;
 }
 
-.pageTitle{
+.pageTitle {
     margin-top: 20px;
     text-align: center;
 }
@@ -18,7 +20,7 @@ select {
     height: 35px;
 }
 
-.listSettings{
+.listSettings {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -104,11 +106,11 @@ select {
     cursor: pointer;
 }
 
-.movie{
+.movie {
     display: flex;
 }
 
-.listItemArea{
+.listItemArea {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -126,13 +128,14 @@ select {
     justify-content: center;
 }
 
-.searchArea{
+.searchArea {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.searchButton{
+
+.searchButton {
     width: 10%;
     height: 50px;
     border-radius: 10px;
@@ -143,23 +146,36 @@ select {
     font-weight: bolder;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.397);
 }
-.searchButton:hover{
+
+.searchButton:hover {
     cursor: pointer;
     box-shadow: 0 0 0;
 }
 
 
 @media only screen and (max-width: 1199px) {
+
     /* タブレット (landscape) */
+    .movieListWrapper {
+        width: 90%;
+    }
 }
 
 @media only screen and (max-width: 767px) {
+
     /* タブレット (portrait) */
+    .movieListWrapper {
+        width: 95%;
+    }
 }
 
 @media only screen and (max-width: 520px) {
 
     /* スマホ */
+    .movieListWrapper {
+        width: 98%;
+    }
+
     .pageSelector {
         flex-wrap: wrap;
     }
@@ -168,5 +184,4 @@ select {
     .rightArrow {
         display: none;
     }
-
 }

@@ -3,10 +3,13 @@ import styles from "./Signage.module.css";
 import { useParams } from "react-router-dom";
 import useSWR from "swr";
 import Loading from "../loading/Loading";
+import { io } from "socket.io-client";
 
 export default function Signage() {
   const { id } = useParams();
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [socket, setSocket] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
 
   const fetchSignageData = async (url) => {
     const res = await fetch(url, {
@@ -23,9 +26,61 @@ export default function Signage() {
     data: signage,
     error: errorOnSignage,
     isLoading: isLoadingOnSignage,
+    mutate: mutateSignage,
   } = useSWR(`http://localhost:5000/api/signages/${id}`, fetchSignageData, {
-    refreshInterval: 5000, // 5秒ごとに更新
+    refreshInterval: isConnected ? 0 : 5000, // Socket接続時は自動更新停止
   });
+
+  // Socket.IO接続管理
+  useEffect(() => {
+    if (!signage) return;
+
+    // Socket.IO接続を初期化
+    const newSocket = io("http://localhost:5000");
+    setSocket(newSocket);
+
+    // 接続成功時
+    newSocket.on("connect", () => {
+      console.log("Socket.IOに接続:", newSocket.id);
+
+      // サイネージとして登録
+      newSocket.emit("signage-connect", {
+        theaterId: signage.theaterId,
+      });
+    });
+
+    // 接続確認受信
+    newSocket.on("connection-confirmed", (data) => {
+      console.log("サイネージ接続OK:", data);
+      setIsConnected(true);
+    });
+
+    // サイネージデータ更新受信
+    newSocket.on("signage-data-updated", (updatedSignage) => {
+      console.log("サイネージデータを更新:", updatedSignage);
+      // SWRキャッシュを更新
+      mutateSignage(updatedSignage, false);
+    });
+
+    // 接続エラー
+    newSocket.on("connection-error", (error) => {
+      console.error("サイネージ接続エラー:", error);
+      setIsConnected(false);
+    });
+
+    // 切断時
+    newSocket.on("disconnect", () => {
+      console.log("Socket.IOから切断");
+      setIsConnected(false);
+    });
+
+    // クリーンアップ処理
+    return () => {
+      if (newSocket) {
+        newSocket.disconnect();
+      }
+    };
+  }, [signage?.theaterId, mutateSignage]);
 
   if (isLoadingOnSignage) {
     return (
@@ -53,6 +108,16 @@ export default function Signage() {
 
   return (
     <div className={styles.signageWrapper}>
+      {/* 接続状態インジケーター */}
+      <div
+        className={`${styles.connectionStatus} ${
+          isConnected ? styles.connected : styles.disconnected
+        }`}
+      >
+        <div className={styles.statusIndicator}></div>
+        <span>{isConnected ? "オンライン" : "オフライン"}</span>
+      </div>
+
       {/* ポスター表示エリア */}
       <div className={styles.posterArea}>
         {movie && movie.image ? (
@@ -87,7 +152,7 @@ export default function Signage() {
                 <div className={styles.showingTypeTag}>日本語字幕版</div>
               )}
               {showingType.fourK && (
-                <div className={styles.showingTypeTag}>4K</div>
+                <div className={styles.showingTypeTag}>4K上映</div>
               )}
               {showingType.threeD && (
                 <div className={styles.showingTypeTag}>3D</div>

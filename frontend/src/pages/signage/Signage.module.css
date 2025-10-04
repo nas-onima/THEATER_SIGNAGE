@@ -7,6 +7,42 @@
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
     font-family: 'Noto Sans JP', Arial, sans-serif;
     overflow: hidden;
+    position: relative;
+}
+
+/* 接続状態インジケーター */
+.connectionStatus {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 8px 12px;
+    border-radius: 20px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.statusIndicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.connected .statusIndicator {
+    background-color: #4CAF50;
+    box-shadow: 0 0 10px #4CAF50;
+}
+
+.disconnected .statusIndicator {
+    background-color: #f44336;
+    box-shadow: 0 0 10px #f44336;
 }
 
 /* ポスター表示エリア */
@@ -199,7 +235,7 @@
     }
 
     .posterArea {
-        padding:0;
+        padding: 0;
     }
 
     .infoArea {
