@@ -143,7 +143,7 @@ export default function SignageDetailsDialog({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth scroll="body">
       <DialogTitle>
         シアター{signage?.theaterId} サイネージ設定
         {signage && (
@@ -204,98 +204,8 @@ export default function SignageDetailsDialog({
                 </Button>
               </div>
             ) : (
-              <div className={styles.noMovieSelected}>
-                未設定
-              </div>
+              <div className={styles.noMovieSelected}>未設定</div>
             )}
-          </div>
-
-          {/* 上映種別の設定 */}
-          <div className={styles.showingTypeSection}>
-            <h3>上映種別</h3>
-            <div className={styles.checkboxGrid}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showingType.sub}
-                    onChange={() => handleShowingTypeChange("sub")}
-                  />
-                }
-                label="字幕版"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showingType.dub}
-                    onChange={() => handleShowingTypeChange("dub")}
-                  />
-                }
-                label="吹替版"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showingType.jsub}
-                    onChange={() => handleShowingTypeChange("jsub")}
-                  />
-                }
-                label="日本語字幕版"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showingType.fourK}
-                    onChange={() => handleShowingTypeChange("fourK")}
-                  />
-                }
-                label="4K"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showingType.threeD}
-                    onChange={() => handleShowingTypeChange("threeD")}
-                  />
-                }
-                label="3D"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showingType.cheer}
-                    onChange={() => handleShowingTypeChange("cheer")}
-                  />
-                }
-                label="応援上映"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showingType.live}
-                    onChange={() => handleShowingTypeChange("live")}
-                  />
-                }
-                label="LV"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showingType.greeting}
-                    onChange={() => handleShowingTypeChange("greeting")}
-                  />
-                }
-                label="舞台挨拶"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showingType.greetingLive}
-                    onChange={() => handleShowingTypeChange("greetingLive")}
-                  />
-                }
-                label="舞台挨拶中継"
-              />
-            </div>
           </div>
 
           {/* 映画選択リスト */}
@@ -304,6 +214,94 @@ export default function SignageDetailsDialog({
             <MovieSelectionList
               onMovieSelect={handleMovieSelect}
               selectedMovieId={selectedMovie?._id}
+            />
+          </div>
+        </div>
+
+        {/* 上映種別の設定 */}
+        <div className={styles.showingTypeSection}>
+          <h3>上映種別</h3>
+          <div className={styles.checkboxGrid}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showingType.sub}
+                  onChange={() => handleShowingTypeChange("sub")}
+                />
+              }
+              label="字幕版"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showingType.dub}
+                  onChange={() => handleShowingTypeChange("dub")}
+                />
+              }
+              label="吹替版"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showingType.jsub}
+                  onChange={() => handleShowingTypeChange("jsub")}
+                />
+              }
+              label="日本語字幕版"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showingType.fourK}
+                  onChange={() => handleShowingTypeChange("fourK")}
+                />
+              }
+              label="4K"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showingType.threeD}
+                  onChange={() => handleShowingTypeChange("threeD")}
+                />
+              }
+              label="3D"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showingType.cheer}
+                  onChange={() => handleShowingTypeChange("cheer")}
+                />
+              }
+              label="応援上映"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showingType.live}
+                  onChange={() => handleShowingTypeChange("live")}
+                />
+              }
+              label="LV"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showingType.greeting}
+                  onChange={() => handleShowingTypeChange("greeting")}
+                />
+              }
+              label="舞台挨拶"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showingType.greetingLive}
+                  onChange={() => handleShowingTypeChange("greetingLive")}
+                />
+              }
+              label="舞台挨拶中継"
             />
           </div>
         </div>
