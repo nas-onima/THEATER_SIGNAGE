@@ -17,9 +17,10 @@ const fetcher = async (url) => {
 };
 
 export default function MovieSelectionList({ onMovieSelect, selectedMovieId }) {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState(""); // 入力値
+  const [searchQuery, setSearchQuery] = useState(""); // 実際の検索クエリ
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState("title"); // title, title-1, releaseDate, releaseDate-1
+  const [sortBy, setSortBy] = useState("releaseDate-1"); // title, title-1, releaseDate, releaseDate-1
   const [showOnlyAvailable, setShowOnlyAvailable] = useState(true); // notended フィルター
   const pageSize = 20; // ページサイズを大きめに設定
 
@@ -29,7 +30,7 @@ export default function MovieSelectionList({ onMovieSelect, selectedMovieId }) {
       page: currentPage.toString(),
       limit: pageSize.toString(),
       sortby: sortBy,
-      search: searchQuery,
+      search: encodeURIComponent(searchQuery), // 特殊文字をエンコード
     });
 
     if (showOnlyAvailable) {
@@ -46,8 +47,20 @@ export default function MovieSelectionList({ onMovieSelect, selectedMovieId }) {
     setCurrentPage(1);
   }, [searchQuery, sortBy, showOnlyAvailable]);
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+  const handleSearchInputChange = (e) => {
+    setSearchInput(e.target.value);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setSearchQuery(searchInput.trim());
+    setCurrentPage(1); // 検索実行時はページを1に戻す
+  };
+
+  const handleSearchClear = () => {
+    setSearchInput("");
+    setSearchQuery("");
+    setCurrentPage(1);
   };
 
   const handleSortChange = (e) => {
@@ -78,13 +91,32 @@ export default function MovieSelectionList({ onMovieSelect, selectedMovieId }) {
       {/* 検索・フィルター・ソートコントロール */}
       <div className={styles.controlsContainer}>
         <div className={styles.searchContainer}>
-          <input
-            type="text"
-            placeholder="映画タイトルで検索..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className={styles.searchInput}
-          />
+          <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
+            <input
+              type="text"
+              placeholder="映画タイトルで検索..."
+              value={searchInput}
+              onChange={handleSearchInputChange}
+              className={styles.searchInput}
+            />
+            <button
+              type="submit"
+              className={styles.searchButton}
+              disabled={isLoading}
+            >
+              検索
+            </button>
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={handleSearchClear}
+                className={styles.clearButton}
+                disabled={isLoading}
+              >
+                クリア
+              </button>
+            )}
+          </form>
         </div>
 
         <div className={styles.filtersContainer}>
@@ -110,8 +142,8 @@ export default function MovieSelectionList({ onMovieSelect, selectedMovieId }) {
               >
                 <option value="title">タイトル (昇順)</option>
                 <option value="title-1">タイトル (降順)</option>
-                <option value="releaseDate">公開日 (昇順)</option>
-                <option value="releaseDate-1">公開日 (降順)</option>
+                <option value="releaseDate">公開日 (古い順)</option>
+                <option value="releaseDate-1">公開日 (新しい順)</option>
               </select>
             </label>
           </div>
@@ -121,10 +153,15 @@ export default function MovieSelectionList({ onMovieSelect, selectedMovieId }) {
       {/* 結果表示 */}
       <div className={styles.resultsInfo}>
         {data && (
-          <span>
-            {data.total}件中 {(currentPage - 1) * pageSize + 1}-
-            {Math.min(currentPage * pageSize, data.total)}件を表示
-          </span>
+          <div>
+            {searchQuery && (
+              <div className={styles.searchInfo}>検索: "{searchQuery}"</div>
+            )}
+            <span>
+              {data.total}件中 {(currentPage - 1) * pageSize + 1}-
+              {Math.min(currentPage * pageSize, data.total)}件を表示
+            </span>
+          </div>
         )}
       </div>
 

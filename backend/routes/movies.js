@@ -58,7 +58,14 @@ router.get("/", async (req, res) => {
         const qsortby = req.query.sortby;
         const sortby = qsortby === "releaseDate-1" ? { releaseDate: -1, title: -1 } : qsortby === "releaseDate" ? { releaseDate: 1, title: -1 } : qsortby === "title-1" ? { title: -1, releaseDate: -1 } : { title: 1, releaseDate: -1 };
         const notEnded = parseInt(req.query.notended);
-        const searchQuery = req.query.search || "";
+        const rawSearchQuery = req.query.search || "";
+
+        // 検索クエリの特殊文字をエスケープ
+        const escapeRegExp = (string) => {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        };
+
+        const searchQuery = escapeRegExp(decodeURIComponent(rawSearchQuery));
 
         let query = {};
 

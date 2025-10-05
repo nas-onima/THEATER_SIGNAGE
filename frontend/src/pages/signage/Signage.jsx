@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "./Signage.module.css";
 import { useParams } from "react-router-dom";
 import useSWR from "swr";
@@ -10,6 +10,9 @@ export default function Signage() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0);
+  const previousData = useRef(null);
 
   const fetchSignageData = async (url) => {
     const res = await fetch(url, {
@@ -58,8 +61,28 @@ export default function Signage() {
     // サイネージデータ更新受信
     newSocket.on("signage-data-updated", (updatedSignage) => {
       console.log("サイネージデータを更新:", updatedSignage);
-      // SWRキャッシュを更新
-      mutateSignage(updatedSignage, false);
+
+      // データが変更された場合のみフェードアニメーションを実行
+      if (
+        previousData.current &&
+        (previousData.current.movie?.id !== updatedSignage.movie?.id ||
+          previousData.current.titleOverride !== updatedSignage.titleOverride ||
+          JSON.stringify(previousData.current.showingType) !==
+            JSON.stringify(updatedSignage.showingType))
+      ) {
+        // フェードアウト開始
+        setIsTransitioning(true);
+
+        // 300ms後にデータ更新とフェードイン
+        setTimeout(() => {
+          mutateSignage(updatedSignage, false);
+          setAnimationKey((prev) => prev + 1);
+          setIsTransitioning(false);
+        }, 300);
+      } else {
+        // データが同じ場合は即座に更新
+        mutateSignage(updatedSignage, false);
+      }
     });
 
     // 接続エラー
@@ -81,6 +104,17 @@ export default function Signage() {
       }
     };
   }, [signage?.theaterId, mutateSignage]);
+
+  // データ変更の監視
+  useEffect(() => {
+    if (signage) {
+      previousData.current = {
+        movie: signage.movie,
+        titleOverride: signage.titleOverride,
+        showingType: signage.showingType,
+      };
+    }
+  }, [signage]);
 
   if (isLoadingOnSignage) {
     return (
@@ -119,7 +153,12 @@ export default function Signage() {
       </div>
 
       {/* ポスター表示エリア */}
-      <div className={styles.posterArea}>
+      <div
+        className={`${styles.posterArea} ${
+          isTransitioning ? styles.fadeOut : styles.fadeIn
+        }`}
+        key={`poster-${animationKey}`}
+      >
         {movie && movie.image ? (
           <img
             src={`data:image/png;base64,${movie.image}`}
@@ -139,7 +178,12 @@ export default function Signage() {
       {/* 下部情報エリア */}
       <div className={styles.infoArea}>
         {/* 上映種別表示 */}
-        <div className={styles.showingTypeArea}>
+        <div
+          className={`${styles.showingTypeArea} ${
+            isTransitioning ? styles.fadeOut : styles.fadeIn
+          }`}
+          key={`showing-${animationKey}`}
+        >
           {hasAnyShowingType ? (
             <div className={styles.showingTypeList}>
               {showingType.sub && (
@@ -178,7 +222,12 @@ export default function Signage() {
         </div>
 
         {/* タイトル表示 */}
-        <div className={styles.titleArea}>
+        <div
+          className={`${styles.titleArea} ${
+            isTransitioning ? styles.fadeOut : styles.fadeIn
+          }`}
+          key={`title-${animationKey}`}
+        >
           <h1 className={styles.movieTitle}>
             {movie && movie.rating && movie.rating !== "G" && (
               <span className={styles.rating}>【{movie.rating}】</span>
@@ -192,10 +241,10 @@ export default function Signage() {
         </div>
 
         {/* シアター情報と時刻 */}
-        {/* <div className={styles.footerInfo}>
+        <div className={styles.footerInfo}>
           <div className={styles.theaterInfo}>シアター {signage.theaterId}</div>
           
-        </div> */}
+        </div>
       </div>
     </div>
   );

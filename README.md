@@ -518,21 +518,6 @@ erDiagram
     }
 ```
 
-showingType: { // 上映種別
-sub: Boolean, // 字幕版
-dub: Boolean, // 吹替版
-jsub: Boolean, // 日本語字幕版
-fourK: Boolean, // 4K 上映
-threeD: Boolean, // 3D 上映
-cheer: Boolean, // 応援上映
-live: Boolean, // ライブビューイング
-greeting: Boolean, // 舞台挨拶
-greetingLive: Boolean // 舞台挨拶中継
-}
-}
-
-```
-
 ## 👨‍💻 開発者
 
 - **nas-onima** - _Initial work_ - [GitHub](https://github.com/nas-onima)

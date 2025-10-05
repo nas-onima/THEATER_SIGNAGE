@@ -372,7 +372,7 @@ export default function SignageDetailsDialog({
           キャンセル
         </Button>
         <Button variant="contained" onClick={handleSave} disabled={isUpdating}>
-          {isUpdating ? "更新中..." : "保存"}
+          {isUpdating ? "更新中..." : "セット"}
         </Button>
       </DialogActions>
     </Dialog>
