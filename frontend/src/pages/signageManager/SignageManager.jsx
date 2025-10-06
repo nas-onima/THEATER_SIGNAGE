@@ -7,6 +7,7 @@ import useSWR from "swr";
 import { Dialog, Modal } from "@mui/material";
 import MovieList from "../movieList/movieList";
 import SignageDetailsDialog from "../../components/signageDetailsDialog/SignageDetailsDialog";
+import { createApiUrl } from "../../config/api";
 
 function SignageManager() {
   const [selectedSignage, setSelectedSignage] = useState(null);
@@ -34,7 +35,7 @@ function SignageManager() {
   };
 
   const { data, error, isLoading, mutate, isValidating } = useSWR(
-    `http://localhost:5000/api/signages`,
+    createApiUrl("/api/signages"),
     fetchSignages
   );
 

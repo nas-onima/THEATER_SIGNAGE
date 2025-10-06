@@ -18,9 +18,13 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
+
+// 環境変数から設定を取得（デフォルトはローカル開発用）
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: FRONTEND_URL,
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -34,7 +38,7 @@ app.use(express.json());
 app.use(cookieParser())
 app.use(cors({
   credentials: true,
-  origin: 'http://localhost:5173',
+  origin: FRONTEND_URL,
 }));
 
 app.use("/api/users", usersRoute);

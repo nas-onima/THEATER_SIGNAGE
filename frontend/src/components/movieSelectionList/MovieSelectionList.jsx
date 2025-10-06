@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import styles from "./MovieSelectionList.module.css";
 import useSWR from "swr";
 import { getIdTokenForSWR } from "../../hooks/useUserData";
+import { createApiUrl } from "../../config/api";
 
 const fetcher = async (url) => {
   const token = await getIdTokenForSWR();
@@ -37,7 +38,7 @@ export default function MovieSelectionList({ onMovieSelect, selectedMovieId }) {
       params.append("notended", "1");
     }
 
-    return `http://localhost:5000/api/movies?${params.toString()}`;
+    return createApiUrl(`/api/movies?${params.toString()}`);
   }, [currentPage, sortBy, searchQuery, showOnlyAvailable, pageSize]);
 
   const { data, error, isLoading } = useSWR(apiUrl, fetcher);

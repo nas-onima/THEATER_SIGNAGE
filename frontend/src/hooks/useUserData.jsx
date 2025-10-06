@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { createApiUrl } from "../config/api";
 
 export async function getIdTokenForSWR(forceRefresh) {
   const auth = getAuth();
@@ -42,7 +43,7 @@ const fetcher = async (url) => {
 
 export function useUserData() {
   const { data, error, isLoading, mutate } = useSWR(
-    "http://localhost:5000/api/auth/user",
+    createApiUrl("/api/auth/user"),
     fetcher,
     {
       revalidateOnFocus: false,

@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import useSWR from "swr";
 import Loading from "../loading/Loading";
 import { io } from "socket.io-client";
+import { createApiUrl, SOCKET_URL } from "../../config/api";
 
 export default function Signage() {
   const { id } = useParams();
@@ -30,7 +31,7 @@ export default function Signage() {
     error: errorOnSignage,
     isLoading: isLoadingOnSignage,
     mutate: mutateSignage,
-  } = useSWR(`http://localhost:5000/api/signages/${id}`, fetchSignageData, {
+  } = useSWR(createApiUrl(`/api/signages/${id}`), fetchSignageData, {
     refreshInterval: isConnected ? 0 : 5000, // Socket接続時は自動更新停止
   });
 
@@ -39,7 +40,7 @@ export default function Signage() {
     if (!signage) return;
 
     // Socket.IO接続を初期化
-    const newSocket = io("http://localhost:5000");
+    const newSocket = io(SOCKET_URL);
     setSocket(newSocket);
 
     // 接続成功時
@@ -243,7 +244,6 @@ export default function Signage() {
         {/* シアター情報と時刻 */}
         <div className={styles.footerInfo}>
           <div className={styles.theaterInfo}>シアター {signage.theaterId}</div>
-          
         </div>
       </div>
     </div>

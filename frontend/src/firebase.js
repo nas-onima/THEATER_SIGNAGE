@@ -4,6 +4,7 @@ import { getAnalytics } from "firebase/analytics";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, getIdToken } from "firebase/auth";
 import { getFirestore, query, getDocs, collection, where, addDoc } from "firebase/firestore";
 import { getIdTokenForSWR } from "./hooks/useUserData";
+import { createApiUrl } from "./config/api";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCRmygdaxKCl9jKZG7jyYM58BvOcUkfX5I",
@@ -25,7 +26,7 @@ const firestore = getFirestore(app);
 const registerUserToMongoDB = async (name, email, uid) => {
   try {
     const token = await getIdTokenForSWR();
-    const user = await fetch(`http://localhost:5000/api/auth/user`, {
+    const user = await fetch(createApiUrl('/api/auth/user'), {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -34,7 +35,7 @@ const registerUserToMongoDB = async (name, email, uid) => {
     });
     if (user) return;
 
-    await fetch(`http://localhost:5000/api/auth/register`, {
+    await fetch(createApiUrl('/api/auth/register'), {
       method: "POST",
       body: JSON.stringify({
         name: name,
