@@ -11,6 +11,7 @@ import { useUserData } from "./hooks/useUserData";
 import Loading from "./pages/loading/Loading";
 import SignageManager from "./pages/signageManager/SignageManager";
 import Signage from "./pages/signage/Signage";
+import MovieList from "./pages/movieList/movieList";
 
 function App() {
   const { userData, isLoading, isError, mutate } = useUserData();
@@ -28,7 +29,8 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/signagemanager" element={<SignageManager />} />
+        <Route path="/manage/movie" element={<MovieList />} />
+        <Route path="/manage/signages" element={<SignageManager />} />
         <Route path="/signage/:id" element={<Signage/>} />
       </Routes>
     </Router>

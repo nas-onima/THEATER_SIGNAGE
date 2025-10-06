@@ -4,9 +4,45 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background: linear-gradient(135deg, #504646 0%, #1a1a1a 100%);
     font-family: 'Noto Sans JP', Arial, sans-serif;
     overflow: hidden;
+    position: relative;
+}
+
+/* 接続状態インジケーター */
+.connectionStatus {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 8px 12px;
+    border-radius: 20px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.statusIndicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.connected .statusIndicator {
+    background-color: #4CAF50;
+    box-shadow: 0 0 10px #4CAF50;
+}
+
+.disconnected .statusIndicator {
+    background-color: #f44336;
+    box-shadow: 0 0 10px #f44336;
 }
 
 /* ポスター表示エリア */
@@ -67,6 +103,7 @@
     backdrop-filter: blur(10px);
     border-top: 2px solid rgba(255, 255, 255, 0.1);
     flex-shrink: 0;
+    position: relative;
 }
 
 /* 上映種別エリア */
@@ -127,18 +164,15 @@
 
 /* フッター情報 */
 .footerInfo {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1.1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    padding-top: 20px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .theaterInfo {
     font-weight: bold;
-    font-size: 1.3rem;
+    font-size: 1rem;
 }
 
 .timeInfo {
@@ -154,7 +188,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background: linear-gradient(135deg, #504646 0%, #1a1a1a 100%);
 }
 
 /* エラーラッパー */
@@ -187,6 +221,41 @@
     opacity: 0.9;
 }
 
+/* フェードアニメーション */
+.fadeIn {
+    animation: fadeInAnimation 0.5s ease-in-out forwards;
+    opacity: 1;
+}
+
+.fadeOut {
+    animation: fadeOutAnimation 0.3s ease-in-out forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInAnimation {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOutAnimation {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
 /* レスポンシブデザイン */
 @media (max-width: 768px) {
     .movieTitle {
@@ -199,7 +268,7 @@
     }
 
     .posterArea {
-        padding:0;
+        padding: 0;
     }
 
     .infoArea {

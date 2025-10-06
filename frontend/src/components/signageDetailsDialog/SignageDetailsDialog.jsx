@@ -13,6 +13,7 @@ import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import { getIdTokenForSWR } from "../../hooks/useUserData";
 import MovieSelectionList from "../movieSelectionList/MovieSelectionList";
+import { createApiUrl } from "../../config/api";
 
 export default function SignageDetailsDialog({
   signage,
@@ -76,21 +77,18 @@ export default function SignageDetailsDialog({
     setIsUpdating(true);
     try {
       const token = await getIdTokenForSWR();
-      const res = await fetch(
-        `http://localhost:5000/api/signages/${signage._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            movieId: selectedMovie._id,
-            titleOverride: titleOverride.trim() || null,
-            showingType: showingType,
-          }),
-        }
-      );
+      const res = await fetch(createApiUrl(`/api/signages/${signage._id}`), {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          movieId: selectedMovie._id,
+          titleOverride: titleOverride.trim() || null,
+          showingType: showingType,
+        }),
+      });
 
       if (!res.ok) {
         throw new Error(`API ERROR: ${res.statusText}`);
@@ -110,31 +108,28 @@ export default function SignageDetailsDialog({
     setIsUpdating(true);
     try {
       const token = await getIdTokenForSWR();
-      const res = await fetch(
-        `http://localhost:5000/api/signages/${signage._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+      const res = await fetch(createApiUrl(`/api/signages/${signage._id}`), {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          movieId: null,
+          titleOverride: null,
+          showingType: {
+            sub: false,
+            dub: false,
+            jsub: false,
+            fourK: false,
+            threeD: false,
+            cheer: false,
+            live: false,
+            greeting: false,
+            greetingLive: false,
           },
-          body: JSON.stringify({
-            movieId: null,
-            titleOverride: null,
-            showingType: {
-              sub: false,
-              dub: false,
-              jsub: false,
-              fourK: false,
-              threeD: false,
-              cheer: false,
-              live: false,
-              greeting: false,
-              greetingLive: false,
-            },
-          }),
-        }
-      );
+        }),
+      });
 
       if (!res.ok) {
         throw new Error(`API ERROR: ${res.statusText}`);
@@ -372,7 +367,7 @@ export default function SignageDetailsDialog({
           キャンセル
         </Button>
         <Button variant="contained" onClick={handleSave} disabled={isUpdating}>
-          {isUpdating ? "更新中..." : "保存"}
+          {isUpdating ? "更新中..." : "セット"}
         </Button>
       </DialogActions>
     </Dialog>

@@ -6,6 +6,7 @@ import MovieListItem from "../../components/movie/MovieListItem";
 import MovieRegistrationForm from "../../components/movieRegistrationForm/MovieRegistrationForm";
 import MovieDetailsDialog from "../../components/movieDetailsDialog/MovieDetailsDialog"; // ダイアログコンポーネントをインポート
 import Dialog from "@mui/material/Dialog"; // MUIのDialogコンポーネントをインポート
+import { createApiUrl } from "../../config/api";
 
 export default function MovieList({ movieListMode = "management" }) {
   const [page, setPage] = useState(1);
@@ -188,7 +189,9 @@ export default function MovieList({ movieListMode = "management" }) {
   };
 
   const { data, error, isLoading, mutate } = useSWR(
-    `http://localhost:5000/api/movies?page=${page}&limit=${pageLimit}&sortby=${sortBy}&notended=${onlyNotEnded}&search=${searchQuery}`,
+    createApiUrl(
+      `/api/movies?page=${page}&limit=${pageLimit}&sortby=${sortBy}&notended=${onlyNotEnded}&search=${searchQuery}`
+    ),
     fetchMovies
   );
 

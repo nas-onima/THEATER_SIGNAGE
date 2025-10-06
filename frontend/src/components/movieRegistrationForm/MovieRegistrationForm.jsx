@@ -29,7 +29,7 @@ export default function MovieRegistrationForm() {
   const handleSubmit = async (e) => {
     try {
       const token = await getIdTokenForSWR();
-      const res = await fetch(`http://localhost:5000/api/movies/register`, {
+      const res = await fetch(createApiUrl("/api/movies/register"), {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

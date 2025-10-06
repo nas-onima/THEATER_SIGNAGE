@@ -9,6 +9,7 @@ import MenuItem from "@mui/material/MenuItem";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getIdTokenForSWR } from "../../hooks/useUserData";
+import { createApiUrl } from "../../config/api";
 
 export default function MovieDetailsDialog({ movie, onClose, mutate }) {
   const [editField, setEditField] = useState(null);
@@ -31,17 +32,14 @@ export default function MovieDetailsDialog({ movie, onClose, mutate }) {
   const handleSaveChanges = async () => {
     try {
       const token = await getIdTokenForSWR();
-      const res = await fetch(
-        `http://localhost:5000/api/movies/movie/${movie._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedMovie),
-        }
-      );
+      const res = await fetch(createApiUrl(`/api/movies/movie/${movie._id}`), {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedMovie),
+      });
 
       if (!res.ok) {
         throw new Error(`API ERROR: ${res.statusText}`);
