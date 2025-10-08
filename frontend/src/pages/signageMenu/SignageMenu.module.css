@@ -1,0 +1,209 @@
+.container {
+    width: 100%;
+    min-height: 100vh;
+    padding: 80px 20px 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    color: white;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin: 0 0 10px 0;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header p {
+    font-size: 1.2rem;
+    margin: 0;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* サイネージリスト */
+.signageList {
+    max-width: 600px;
+    margin: 0 auto 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* サイネージアイテム */
+.signageItem {
+    background: white;
+    border-radius: 12px;
+    padding: 25px 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid transparent;
+}
+
+.signageItem:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
+}
+
+.theaterNumber {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.arrow {
+    font-size: 1.5rem;
+    color: #667eea;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+}
+
+.signageItem:hover .arrow {
+    transform: translateX(5px);
+}
+
+/* 空の状態 */
+.emptyState {
+    text-align: center;
+    color: white;
+    padding: 60px 20px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.emptyState h3 {
+    font-size: 1.5rem;
+    margin: 0 0 10px 0;
+    font-weight: 600;
+}
+
+.emptyState p {
+    font-size: 1rem;
+    margin: 0 0 30px 0;
+    opacity: 0.9;
+}
+
+.manageLink {
+    display: inline-block;
+    background: white;
+    color: #667eea;
+    padding: 12px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.manageLink:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+}
+
+/* 戻るボタン */
+.backButton {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.backLink {
+    display: inline-block;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 10px 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    opacity: 0.9;
+}
+
+.backLink:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.6);
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+/* ローディング・エラー */
+.loadingWrapper,
+.errorWrapper {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.errorMessage {
+    text-align: center;
+    color: white;
+    padding: 40px;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.errorMessage h1 {
+    font-size: 2rem;
+    margin: 0 0 15px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.errorMessage p {
+    font-size: 1.1rem;
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    .container {
+        padding: 80px 15px 20px;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .header p {
+        font-size: 1rem;
+    }
+
+    .signageItem {
+        padding: 20px 25px;
+    }
+
+    .theaterNumber {
+        font-size: 1.2rem;
+    }
+
+    .arrow {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .signageItem {
+        padding: 18px 20px;
+    }
+
+    .theaterNumber {
+        font-size: 1.1rem;
+    }
+
+    .backLink {
+        font-size: 1rem;
+        padding: 8px 16px;
+    }
+}

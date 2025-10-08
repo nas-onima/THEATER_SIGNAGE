@@ -65,20 +65,25 @@ const signInWithGoogle = async () => {
       user.displayName,
       user.email,
       user.uid
-    )
+    );
+
+    return res; // 成功時にresultを返す
 
   } catch (error) {
     console.log(error.message);
     console.log(error);
+    throw error; // エラーを再スローして呼び出し元で処理
   }
 }
 
 const loginWithEmailAndPassword = async (email, password) => {
   try {
-    await signInWithEmailAndPassword(auth, email, password);
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    return result; // 成功時にresultを返す
   } catch (e) {
     console.log(e);
     console.log(e.message);
+    throw e; // エラーを再スローして呼び出し元で処理
   }
 }
 

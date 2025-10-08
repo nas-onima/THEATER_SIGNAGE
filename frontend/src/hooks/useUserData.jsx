@@ -47,6 +47,10 @@ export function useUserData() {
     fetcher,
     {
       revalidateOnFocus: false,
+      revalidateOnReconnect: true,
+      dedupingInterval: 1000, // 重複リクエストを制限
+      errorRetryCount: 2, // エラー時のリトライ回数を制限
+      errorRetryInterval: 1000, // リトライ間隔
     }
   );
 

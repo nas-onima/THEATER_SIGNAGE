@@ -17,18 +17,18 @@ export default function Home() {
         <h1>メニュー</h1>
 
         <div className={styles.menuContainer}>
-          {/* <div className={styles.menuItem}>
-            <Link to="/signage/1" className={styles.menuLink}>
+          <div className={styles.menuItem}>
+            <Link to="/signage-menu" className={styles.menuLink}>
               <div className={styles.iconWrapper}>
                 <span className={styles.icon}>📺</span>
               </div>
               <div className={styles.menuContent}>
                 <h3>サイネージ表示</h3>
-                <p>サイネージ表示用ページへ遷移</p>
+                <p>表示するサイネージを選択</p>
               </div>
               <span className={styles.arrow}>→</span>
             </Link>
-          </div> */}
+          </div>
 
           <div className={styles.menuItem}>
             <Link to="/manage/signages" className={styles.menuLink}>

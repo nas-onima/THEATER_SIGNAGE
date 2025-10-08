@@ -12,6 +12,7 @@ import Loading from "./pages/loading/Loading";
 import SignageManager from "./pages/signageManager/SignageManager";
 import Signage from "./pages/signage/Signage";
 import MovieList from "./pages/movieList/movieList";
+import SignageMenu from "./pages/signageMenu/SignageMenu";
 
 function App() {
   const { userData, isLoading, isError, mutate } = useUserData();
@@ -29,9 +30,10 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/signage-menu" element={<SignageMenu />} />
         <Route path="/manage/movie" element={<MovieList />} />
         <Route path="/manage/signages" element={<SignageManager />} />
-        <Route path="/signage/:id" element={<Signage/>} />
+        <Route path="/signage/:id" element={<Signage />} />
       </Routes>
     </Router>
   );

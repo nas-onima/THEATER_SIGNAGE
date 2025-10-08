@@ -14,6 +14,7 @@ export default function Signage() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
   const previousData = useRef(null);
+  const keepAliveInterval = useRef(null);
 
   const fetchSignageData = async (url) => {
     const res = await fetch(url, {
@@ -32,15 +33,34 @@ export default function Signage() {
     isLoading: isLoadingOnSignage,
     mutate: mutateSignage,
   } = useSWR(createApiUrl(`/api/signages/${id}`), fetchSignageData, {
-    refreshInterval: isConnected ? 0 : 5000, // Socket接続時は自動更新停止
+    refreshInterval: isConnected ? 0 : 10000, // Socket切断時は10秒間隔でフォールバック
+    revalidateOnFocus: false, // フォーカス時の自動更新を無効
+    revalidateOnReconnect: true, // 再接続時は更新
+    dedupingInterval: 5000, // 重複リクエスト防止
+    errorRetryCount: 3, // エラー時のリトライ回数
+    errorRetryInterval: 2000, // リトライ間隔
   });
 
   // Socket.IO接続管理
   useEffect(() => {
     if (!signage) return;
 
-    // Socket.IO接続を初期化
-    const newSocket = io();
+    // Socket.IO接続を初期化（再接続設定を追加）
+    const newSocket = io({
+      // 再接続設定
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      maxReconnectionAttempts: Infinity,
+      // タイムアウト設定
+      timeout: 20000,
+      // Ping設定（接続維持）
+      pingTimeout: 60000,
+      pingInterval: 25000,
+      // 接続を強制的に維持
+      forceNew: false,
+      transports: ["websocket", "polling"],
+    });
     setSocket(newSocket);
 
     // 接続成功時
@@ -53,10 +73,44 @@ export default function Signage() {
       });
     });
 
+    // 再接続時
+    newSocket.on("reconnect", (attemptNumber) => {
+      console.log("Socket.IO再接続成功:", attemptNumber);
+      // 再接続時にサイネージを再登録
+      newSocket.emit("signage-connect", {
+        theaterId: signage.theaterId,
+      });
+    });
+
+    // 再接続試行中
+    newSocket.on("reconnecting", (attemptNumber) => {
+      console.log("Socket.IO再接続試行中:", attemptNumber);
+      setIsConnected(false);
+    });
+
+    // 再接続失敗
+    newSocket.on("reconnect_failed", () => {
+      console.error("Socket.IO再接続に失敗しました");
+      setIsConnected(false);
+    });
+
     // 接続確認受信
     newSocket.on("connection-confirmed", (data) => {
       console.log("サイネージ接続OK:", data);
       setIsConnected(true);
+
+      // キープアライブを開始
+      if (keepAliveInterval.current) {
+        clearInterval(keepAliveInterval.current);
+      }
+      keepAliveInterval.current = setInterval(() => {
+        if (newSocket.connected) {
+          newSocket.emit("signage-heartbeat", {
+            theaterId: signage.theaterId,
+            timestamp: Date.now(),
+          });
+        }
+      }, 30000); // 30秒間隔でハートビート送信
     });
 
     // サイネージデータ更新受信
@@ -86,20 +140,40 @@ export default function Signage() {
       }
     });
 
+    // 切断時
+    newSocket.on("disconnect", (reason) => {
+      console.log("Socket.IOから切断:", reason);
+      setIsConnected(false);
+
+      // 一部の切断理由では自動再接続しない場合があるので、手動再接続を試行
+      if (reason === "io server disconnect") {
+        console.log("サーバーから切断されました。手動再接続を試行...");
+        setTimeout(() => {
+          newSocket.connect();
+        }, 2000);
+      }
+    });
+
     // 接続エラー
-    newSocket.on("connection-error", (error) => {
-      console.error("サイネージ接続エラー:", error);
+    newSocket.on("connect_error", (error) => {
+      console.error("Socket.IO接続エラー:", error);
       setIsConnected(false);
     });
 
-    // 切断時
-    newSocket.on("disconnect", () => {
-      console.log("Socket.IOから切断");
-      setIsConnected(false);
+    // Ping/Pongの監視（接続状態確認）
+    newSocket.on("ping", () => {
+      console.log("Socket.IO Ping受信");
+    });
+
+    newSocket.on("pong", (latency) => {
+      console.log("Socket.IO Pong受信, 遅延:", latency + "ms");
     });
 
     // クリーンアップ処理
     return () => {
+      if (keepAliveInterval.current) {
+        clearInterval(keepAliveInterval.current);
+      }
       if (newSocket) {
         newSocket.disconnect();
       }
