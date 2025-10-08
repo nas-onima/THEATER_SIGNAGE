@@ -40,18 +40,21 @@ app.use("/api/auth", authRoute);
 app.use("/api/signages", signageRoute);
 
 app.get(/^(?!\/api).*/, (req, res) => {
-    // この正規表現 /^(?!\/api).*/ は、
-    // "/api" で始まらないすべてのリクエストパスに一致します。
-    // そのため、静的ファイルにも一致しなかった /home や /about がここに到達します。
+  // この正規表現 /^(?!\/api).*/ は、
+  // "/api" で始まらないすべてのリクエストパスに一致します。
+  // そのため、静的ファイルにも一致しなかった /home や /about がここに到達します。
 
-    // req.path.startsWith('/api') のチェックは不要になりますが、念のため残すことも可能
-    
-    return res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+  // req.path.startsWith('/api') のチェックは不要になりますが、念のため残すことも可能
+
+  return res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
 });
 
 //connect to DB and start server
 connectDB();
 const PORT = process.env.PORT || 5000;
+
+// 各シアターの接続済みソケットを管理
+const theaterConnections = new Map();
 
 // Socket.IO接続処理
 io.on('connection', (socket) => {
@@ -63,12 +66,44 @@ io.on('connection', (socket) => {
       const { theaterId } = data;
       console.log(`シアター${theaterId}のサイネージが接続しました:`, socket.id);
 
-      // サイネージステータスを更新
+      // 既存の接続があるかチェック
+      const existingConnections = theaterConnections.get(theaterId) || [];
+
+      // 新しい接続を追加
+      const newConnections = [...existingConnections, socket.id];
+      theaterConnections.set(theaterId, newConnections);
+
+      // 既存の接続がある場合、それらに新しい接続の通知を送信
+      if (existingConnections.length > 0) {
+        existingConnections.forEach(existingSocketId => {
+          const existingSocket = io.sockets.sockets.get(existingSocketId);
+          if (existingSocket) {
+            existingSocket.emit('new-connection-detected', {
+              message: `同じシアター${theaterId}に新しい端末が接続されました`,
+              theaterId,
+              newSocketId: socket.id,
+              totalConnections: newConnections.length
+            });
+          }
+        });
+
+        // 新しく接続した端末に既存接続の情報を送信
+        socket.emit('existing-connections-detected', {
+          message: `シアター${theaterId}には既に${existingConnections.length}台の端末が接続されています`,
+          theaterId,
+          existingConnections: existingConnections.length,
+          totalConnections: newConnections.length
+        });
+      }
+
+      // サイネージステータスを更新（最新の接続情報を保持）
       await SignageStatus.findOneAndUpdate(
         { theaterId },
         {
-          socketId: socket.id,
-          isConnected: true
+          socketIds: newConnections, // 複数のソケットIDを配列で保存
+          isConnected: true,
+          lastConnectedAt: new Date(),
+          activeConnections: newConnections.length
         },
         { upsert: true, new: true }
       );
@@ -79,7 +114,9 @@ io.on('connection', (socket) => {
       // 接続確認メッセージを送信
       socket.emit('connection-confirmed', {
         message: `シアター${theaterId}に接続しました`,
-        theaterId
+        theaterId,
+        connectionNumber: newConnections.length,
+        isMultipleConnection: newConnections.length > 1
       });
 
     } catch (error) {
@@ -94,14 +131,49 @@ io.on('connection', (socket) => {
       if (socket.theaterId) {
         console.log(`シアター${socket.theaterId}のサイネージが切断されました:`, socket.id);
 
-        // サイネージステータスを更新
-        await SignageStatus.findOneAndUpdate(
-          { theaterId: socket.theaterId },
-          {
-            socketId: null,
-            isConnected: false
-          }
-        );
+        // 接続リストから該当ソケットを削除
+        const existingConnections = theaterConnections.get(socket.theaterId) || [];
+        const updatedConnections = existingConnections.filter(socketId => socketId !== socket.id);
+
+        if (updatedConnections.length > 0) {
+          // まだ他の接続がある場合
+          theaterConnections.set(socket.theaterId, updatedConnections);
+
+          // 残りの接続に通知
+          updatedConnections.forEach(remainingSocketId => {
+            const remainingSocket = io.sockets.sockets.get(remainingSocketId);
+            if (remainingSocket) {
+              remainingSocket.emit('connection-removed', {
+                message: `シアター${socket.theaterId}の他の端末が切断されました`,
+                theaterId: socket.theaterId,
+                remainingConnections: updatedConnections.length
+              });
+            }
+          });
+
+          // サイネージステータスを更新（まだアクティブな接続がある）
+          await SignageStatus.findOneAndUpdate(
+            { theaterId: socket.theaterId },
+            {
+              socketIds: updatedConnections,
+              isConnected: true,
+              activeConnections: updatedConnections.length
+            }
+          );
+        } else {
+          // 最後の接続が切断された場合
+          theaterConnections.delete(socket.theaterId);
+
+          // サイネージステータスを更新（全て切断）
+          await SignageStatus.findOneAndUpdate(
+            { theaterId: socket.theaterId },
+            {
+              socketIds: [],
+              isConnected: false,
+              activeConnections: 0
+            }
+          );
+        }
       }
     } catch (error) {
       console.error('サイネージ切断処理エラー:', error);
@@ -116,13 +188,34 @@ io.on('connection', (socket) => {
       // 対象のサイネージを取得
       const signage = await SignageStatus.findOne({ theaterId });
 
-      if (signage && signage.socketId && signage.isConnected) {
-        // 対象のサイネージにのみ更新通知を送信
-        io.to(signage.socketId).emit('signage-data-updated', updateData);
-        console.log(`シアター${theaterId}に更新通知を送信しました`);
+      if (signage && signage.socketIds && signage.socketIds.length > 0 && signage.isConnected) {
+        // 全ての接続中のサイネージに更新通知を送信
+        signage.socketIds.forEach(socketId => {
+          const targetSocket = io.sockets.sockets.get(socketId);
+          if (targetSocket) {
+            targetSocket.emit('signage-data-updated', updateData);
+          }
+        });
+        console.log(`シアター${theaterId}の${signage.socketIds.length}台の端末に更新通知を送信しました`);
       }
     } catch (error) {
       console.error('サイネージ更新通知エラー:', error);
+    }
+  });
+
+  // 接続確認用のハートビート処理
+  socket.on('signage-heartbeat', async (data) => {
+    try {
+      const { theaterId, timestamp } = data;
+
+      // ハートビートの応答を送信
+      socket.emit('heartbeat-response', {
+        theaterId,
+        serverTime: Date.now(),
+        clientTime: timestamp
+      });
+    } catch (error) {
+      console.error('ハートビート処理エラー:', error);
     }
   });
 });

@@ -15,7 +15,6 @@ export default function Home() {
       <Topbar />
       <div className={styles.homeContainer}>
         <h1>メニュー</h1>
-
         <div className={styles.menuContainer}>
           <div className={styles.menuItem}>
             <Link to="/signage-menu" className={styles.menuLink}>
@@ -36,8 +35,8 @@ export default function Home() {
                 <span className={styles.icon}>🏛️</span>
               </div>
               <div className={styles.menuContent}>
-                <h3>サイネージ管理</h3>
-                <p>サイネージの集中制御・管理</p>
+                <h3>サイネージ集中管理</h3>
+                <p>サイネージの表示の遠隔操作</p>
               </div>
               <span className={styles.arrow}>→</span>
             </Link>

@@ -4,7 +4,8 @@ import { useParams } from "react-router-dom";
 import useSWR from "swr";
 import Loading from "../loading/Loading";
 import { io } from "socket.io-client";
-import { createApiUrl, SOCKET_URL } from "../../config/api";
+import { createApiUrl } from "../../config/api";
+import SignageDetailsDialog from "../../components/signageDetailsDialog/SignageDetailsDialog";
 
 export default function Signage() {
   const { id } = useParams();
@@ -13,6 +14,19 @@ export default function Signage() {
   const [isConnected, setIsConnected] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
+  const [connectionInfo, setConnectionInfo] = useState({
+    isMultiple: false,
+    totalConnections: 1,
+    showDialog: false,
+  });
+  const [showConnectionDialog, setShowConnectionDialog] = useState(false);
+  const [newConnectionInfo, setNewConnectionInfo] = useState(null);
+  const [countdown, setCountdown] = useState(5);
+  const [tapCount, setTapCount] = useState(0);
+  const [showHiddenMenu, setShowHiddenMenu] = useState(false);
+  const [lastTapTime, setLastTapTime] = useState(0);
+  const countdownTimer = useRef(null);
+  const tapTimer = useRef(null);
   const previousData = useRef(null);
   const keepAliveInterval = useRef(null);
 
@@ -99,6 +113,13 @@ export default function Signage() {
       console.log("サイネージ接続OK:", data);
       setIsConnected(true);
 
+      // 複数接続の情報を更新
+      setConnectionInfo({
+        isMultiple: data.isMultipleConnection,
+        totalConnections: data.connectionNumber,
+        showDialog: false,
+      });
+
       // キープアライブを開始
       if (keepAliveInterval.current) {
         clearInterval(keepAliveInterval.current);
@@ -111,6 +132,60 @@ export default function Signage() {
           });
         }
       }, 30000); // 30秒間隔でハートビート送信
+    });
+
+    // 既存接続検出
+    newSocket.on("existing-connections-detected", (data) => {
+      console.log("既存接続検出:", data);
+      setConnectionInfo({
+        isMultiple: true,
+        totalConnections: data.totalConnections,
+        showDialog: false,
+      });
+    });
+
+    // 新しい接続検出
+    newSocket.on("new-connection-detected", (data) => {
+      console.log("新しい接続検出:", data);
+      setNewConnectionInfo(data);
+      setShowConnectionDialog(true);
+      setCountdown(5); // カウントダウンを5秒に設定
+      setConnectionInfo((prev) => ({
+        ...prev,
+        isMultiple: true,
+        totalConnections: data.totalConnections,
+      }));
+
+      // カウントダウンタイマーを開始
+      if (countdownTimer.current) {
+        clearInterval(countdownTimer.current);
+      }
+
+      countdownTimer.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            // カウントダウン終了時に自動で継続
+            handleConnectionDialogClose();
+            return 5;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    });
+
+    // 接続削除通知
+    newSocket.on("connection-removed", (data) => {
+      console.log("接続削除:", data);
+      setConnectionInfo((prev) => ({
+        ...prev,
+        isMultiple: data.remainingConnections > 1,
+        totalConnections: data.remainingConnections,
+      }));
+    });
+
+    // ハートビート応答
+    newSocket.on("heartbeat-response", (data) => {
+      console.log("ハートビート応答:", data);
     });
 
     // サイネージデータ更新受信
@@ -174,6 +249,12 @@ export default function Signage() {
       if (keepAliveInterval.current) {
         clearInterval(keepAliveInterval.current);
       }
+      if (countdownTimer.current) {
+        clearInterval(countdownTimer.current);
+      }
+      if (tapTimer.current) {
+        clearTimeout(tapTimer.current);
+      }
       if (newSocket) {
         newSocket.disconnect();
       }
@@ -190,6 +271,75 @@ export default function Signage() {
       };
     }
   }, [signage]);
+
+  // 時刻更新
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // 接続ダイアログの処理
+  const handleConnectionDialogClose = () => {
+    setShowConnectionDialog(false);
+    setNewConnectionInfo(null);
+    setCountdown(5); // カウントダウンをリセット
+    if (countdownTimer.current) {
+      clearInterval(countdownTimer.current);
+    }
+  };
+
+  const handleForceDisconnect = () => {
+    if (socket) {
+      socket.disconnect();
+      setIsConnected(false);
+      setShowConnectionDialog(false);
+      setNewConnectionInfo(null);
+      setCountdown(5); // カウントダウンをリセット
+      if (countdownTimer.current) {
+        clearInterval(countdownTimer.current);
+      }
+    }
+  };
+
+  // 隠しメニューのタップ処理
+  const handleScreenTap = () => {
+    const currentTime = Date.now();
+    const timeDiff = currentTime - lastTapTime;
+
+    // 2秒以内の連続タップのみカウント
+    if (timeDiff < 1000) {
+      const newTapCount = tapCount + 1;
+      setTapCount(newTapCount);
+
+      // 5回タップで隠しメニューを表示
+      if (newTapCount >= 5) {
+        setShowHiddenMenu(true);
+        setTapCount(0); // カウントリセット
+        console.log("隠しメニューが開かれました");
+      }
+    } else {
+      // 2秒以上空いた場合はカウントリセット
+      setTapCount(1);
+    }
+
+    setLastTapTime(currentTime);
+
+    // タップカウントを3秒後にリセット
+    if (tapTimer.current) {
+      clearTimeout(tapTimer.current);
+    }
+    tapTimer.current = setTimeout(() => {
+      setTapCount(0);
+    }, 1000);
+  };
+
+  // 隠しメニューを閉じる
+  const closeHiddenMenu = () => {
+    setShowHiddenMenu(false);
+  };
 
   if (isLoadingOnSignage) {
     return (
@@ -216,7 +366,7 @@ export default function Signage() {
   const hasAnyShowingType = Object.values(showingType).some(Boolean);
 
   return (
-    <div className={styles.signageWrapper}>
+    <div className={styles.signageWrapper} onClick={handleScreenTap}>
       {/* 接続状態インジケーター */}
       <div
         className={`${styles.connectionStatus} ${
@@ -224,8 +374,68 @@ export default function Signage() {
         }`}
       >
         <div className={styles.statusIndicator}></div>
-        <span>{isConnected ? "オンライン" : "オフライン"}</span>
+        {/* <span>
+          {isConnected ? "オンライン" : "オフライン"}
+          {connectionInfo.isMultiple && (
+            <span className={styles.multipleConnectionInfo}>
+              （{connectionInfo.totalConnections}台接続中）
+            </span>
+          )}
+        </span> */}
       </div>
+
+      {/* タップカウント表示（デバッグ用、隠し） */}
+      {tapCount > 0 && <div className={styles.tapCounter}>{tapCount}/5</div>}
+
+      {/* 隠しメニュー - SignageDetailsDialog */}
+      {showHiddenMenu && signage && (
+        <SignageDetailsDialog
+          signage={signage}
+          open={showHiddenMenu}
+          onClose={closeHiddenMenu}
+          mutate={mutateSignage}
+        />
+      )}
+
+      {/* 複数接続通知ダイアログ */}
+      {showConnectionDialog && newConnectionInfo && (
+        <div className={styles.dialogOverlay}>
+          <div className={styles.connectionDialog}>
+            <h3>新しい接続が検出されました</h3>
+            <p>
+              同じシアター{newConnectionInfo.theaterId}
+              に別の端末が接続されました。
+            </p>
+            <p>
+              {newConnectionInfo.totalConnections}
+              台の端末が接続されています。
+            </p>
+            <div className={styles.dialogNote}>
+              <p>
+                ※ 複数の端末で同時にサイネージを表示できます。
+                <br />
+                <strong>{countdown}秒後に自動的に接続を継続します。</strong>
+                <br />
+                この端末の接続を切断したい場合は「切断」を選択してください。
+              </p>
+            </div>
+            <div className={styles.dialogButtons}>
+              <button
+                className={styles.continueButton}
+                onClick={handleConnectionDialogClose}
+              >
+                継続 ({countdown}秒)
+              </button>
+              <button
+                className={styles.disconnectButton}
+                onClick={handleForceDisconnect}
+              >
+                切断
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ポスター表示エリア */}
       <div
@@ -317,7 +527,7 @@ export default function Signage() {
 
         {/* シアター情報と時刻 */}
         <div className={styles.footerInfo}>
-          <div className={styles.theaterInfo}>シアター {signage.theaterId}</div>
+          <div className={styles.theaterInfo}>{signage.theaterId}</div>
         </div>
       </div>
     </div>

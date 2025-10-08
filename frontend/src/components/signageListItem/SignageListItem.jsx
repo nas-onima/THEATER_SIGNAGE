@@ -3,10 +3,9 @@ import styles from "./SignageListItem.module.css";
 import useSWR from "swr";
 
 export default function SignageListItem({ signage, onSignageClick }) {
-  
   const handleSignageClick = () => {
     onSignageClick(signage);
-  }
+  };
 
   return (
     <div className={styles.signageListItem} onClick={handleSignageClick}>
@@ -44,16 +43,22 @@ export default function SignageListItem({ signage, onSignageClick }) {
                 <span
                   className={styles.statusIndicator}
                   title="オフライン"
-                  style={{ "backgroundColor": "#dc3545" }}
+                  style={{ backgroundColor: "#dc3545" }}
                 >
                   !
                 </span>
               ) : (
                 <span
                   className={styles.statusIndicator}
-                  title="オフライン"
-                  style={{ "backgroundColor": "#009e15ff" }}
-                ></span>
+                  title={
+                    signage.activeConnections > 1
+                      ? `オンライン (${signage.activeConnections}台接続中)`
+                      : "オンライン"
+                  }
+                  style={{ backgroundColor: "#009e15ff" }}
+                >
+                  {signage.activeConnections > 1 && signage.activeConnections}
+                </span>
               )}
               【{signage.movie.rating}】
               {signage.titleOverride ||
@@ -67,22 +72,28 @@ export default function SignageListItem({ signage, onSignageClick }) {
                 <span
                   className={styles.statusIndicator}
                   title="オフライン"
-                  style={{ "backgroundColor": "#dc3545" }}
+                  style={{ backgroundColor: "#dc3545" }}
                 >
                   !
                 </span>
               ) : (
                 <span
                   className={styles.statusIndicator}
-                  title="オフライン"
-                  style={{ "backgroundColor": "#009e15ff" }}
-                ></span>
+                  title={
+                    signage.activeConnections > 1
+                      ? `オンライン (${signage.activeConnections}台接続中)`
+                      : "オンライン"
+                  }
+                  style={{ backgroundColor: "#009e15ff" }}
+                >
+                  {signage.activeConnections > 1 && signage.activeConnections}
+                </span>
               )}
               【-】
               {signage.titleOverride ||
                 (signage.movie
                   ? signage.movie.title || "NO TITLE"
-                  : "NOT SELECTED")}
+                  : "NO DATA")}
             </span>
           )}
         </div>

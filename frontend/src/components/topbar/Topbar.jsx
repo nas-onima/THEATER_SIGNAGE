@@ -5,7 +5,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useUserData } from "../../hooks/useUserData";
 import { ThreeDots } from "react-loader-spinner";
 import { getAuth, signOut } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 /**
  * This is the Topbar component for the Theater Signage System.
@@ -34,7 +34,9 @@ export default function Topbar() {
           <DehazeIcon className={styles.menuIcon} />
         </div>
       </div>
-      <div className={styles.logo}>Theater Signage System for NGGC</div>
+      <Link to="/home" className={styles.menuLink}>
+        <div className={styles.logo}>Theater Signage System for NGGC</div>
+      </Link>
       <div className={styles.user}>
         <div className={styles.userButton}>
           {/* <div className={styles.userLabel}>LOGIN</div> */}

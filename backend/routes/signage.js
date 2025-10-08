@@ -87,7 +87,7 @@ router.patch("/:id", async (req, res) => {
 
         // Socket.IO通知を送信
         const io = req.app.get('socketio');
-        if (io && signage.socketId && signage.isConnected) {
+        if (io && signage.socketIds && signage.socketIds.length > 0 && signage.isConnected) {
             // 更新されたサイネージデータを取得（movie情報付き）
             const signageObj = signage.toObject();
             if (signageObj.movieId) {
@@ -98,9 +98,14 @@ router.patch("/:id", async (req, res) => {
                 signageObj.movie = null;
             }
 
-            // 対象のサイネージにのみ更新通知を送信
-            io.to(signage.socketId).emit('signage-data-updated', signageObj);
-            console.log(`シアター${signage.theaterId}に更新通知を送信しました`);
+            // 全ての接続中のサイネージに更新通知を送信
+            signage.socketIds.forEach(socketId => {
+                const targetSocket = io.sockets.sockets.get(socketId);
+                if (targetSocket) {
+                    targetSocket.emit('signage-data-updated', signageObj);
+                }
+            });
+            console.log(`シアター${signage.theaterId}の${signage.socketIds.length}台の端末に更新通知を送信しました`);
         }
 
         return res.status(200).json(signage);

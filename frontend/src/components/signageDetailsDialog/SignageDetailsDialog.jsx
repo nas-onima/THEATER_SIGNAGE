@@ -94,7 +94,34 @@ export default function SignageDetailsDialog({
         throw new Error(`API ERROR: ${res.statusText}`);
       }
 
+      const updatedSignage = await res.json();
+
+      // データを更新
       mutate();
+
+      // 手動でSocket.IOの更新通知を送信（念のため）
+      try {
+        const signageWithMovie = {
+          ...updatedSignage,
+          movie: selectedMovie,
+          titleOverride: titleOverride.trim() || null,
+          showingType: showingType,
+        };
+
+        // Socket.IOを通じて直接更新通知を送信
+        if (window.signageSocket && window.signageSocket.connected) {
+          window.signageSocket.emit("signage-update", {
+            theaterId: signage.theaterId,
+            updateData: signageWithMovie,
+          });
+        }
+      } catch (socketError) {
+        console.warn(
+          "Socket.IO更新通知の送信に失敗しましたが、処理は続行します:",
+          socketError
+        );
+      }
+
       onClose();
     } catch (error) {
       console.error("サイネージの更新に失敗しました:", error.message);
@@ -135,7 +162,44 @@ export default function SignageDetailsDialog({
         throw new Error(`API ERROR: ${res.statusText}`);
       }
 
+      const updatedSignage = await res.json();
+
+      // データを更新
       mutate();
+
+      // 手動でSocket.IOの更新通知を送信（念のため）
+      try {
+        const signageWithMovie = {
+          ...updatedSignage,
+          movie: null,
+          titleOverride: null,
+          showingType: {
+            sub: false,
+            dub: false,
+            jsub: false,
+            fourK: false,
+            threeD: false,
+            cheer: false,
+            live: false,
+            greeting: false,
+            greetingLive: false,
+          },
+        };
+
+        // Socket.IOを通じて直接更新通知を送信
+        if (window.signageSocket && window.signageSocket.connected) {
+          window.signageSocket.emit("signage-update", {
+            theaterId: signage.theaterId,
+            updateData: signageWithMovie,
+          });
+        }
+      } catch (socketError) {
+        console.warn(
+          "Socket.IO更新通知の送信に失敗しましたが、処理は続行します:",
+          socketError
+        );
+      }
+
       onClose();
     } catch (error) {
       console.error("映画の削除に失敗しました:", error.message);

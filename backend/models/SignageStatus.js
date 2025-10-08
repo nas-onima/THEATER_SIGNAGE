@@ -5,13 +5,21 @@ const signageStatusSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    socketId: {
-        type: String,
-        default: null
+    socketIds: {
+        type: [String],
+        default: []
     },
     isConnected: {
         type: Boolean,
         default: false
+    },
+    activeConnections: {
+        type: Number,
+        default: 0
+    },
+    lastConnectedAt: {
+        type: Date,
+        default: null
     },
     movieId: {
         type: String,
@@ -21,11 +29,11 @@ const signageStatusSchema = new mongoose.Schema({
         type: String,
         default: null,
     },
-    titleOverride:{
+    titleOverride: {
         type: String,
         default: null,
     },
-    showingType:{
+    showingType: {
         type: Object,
         default: {
             sub: false,
