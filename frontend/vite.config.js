@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
+    host: true,
     proxy: {
       '/api': {
         target: process.env.VITE_API_BASE_URL || 'http://localhost:5000',
@@ -14,6 +15,7 @@ export default defineConfig({
   },
   // 本番ビルド用設定
   build: {
-    outDir: 'dist',
+    outDir: '../backend/dist',
+    emptyOutDir: true,
   },
 })

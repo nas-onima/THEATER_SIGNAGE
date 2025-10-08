@@ -5,7 +5,8 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localho
 export const createApiUrl = (path) => {
     // パスが/で始まらない場合は追加
     const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-    return `${API_BASE_URL}${normalizedPath}`;
+    //return `${API_BASE_URL}${normalizedPath}`;
+    return `${normalizedPath}`;
 };
 
 // Socket.IO接続URL

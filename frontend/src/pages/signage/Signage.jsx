@@ -40,7 +40,7 @@ export default function Signage() {
     if (!signage) return;
 
     // Socket.IO接続を初期化
-    const newSocket = io(SOCKET_URL);
+    const newSocket = io();
     setSocket(newSocket);
 
     // 接続成功時

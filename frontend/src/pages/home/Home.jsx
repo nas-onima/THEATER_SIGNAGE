@@ -17,7 +17,7 @@ export default function Home() {
         <h1>メニュー</h1>
 
         <div className={styles.menuContainer}>
-          <div className={styles.menuItem}>
+          {/* <div className={styles.menuItem}>
             <Link to="/signage/1" className={styles.menuLink}>
               <div className={styles.iconWrapper}>
                 <span className={styles.icon}>📺</span>
@@ -28,7 +28,7 @@ export default function Home() {
               </div>
               <span className={styles.arrow}>→</span>
             </Link>
-          </div>
+          </div> */}
 
           <div className={styles.menuItem}>
             <Link to="/manage/signages" className={styles.menuLink}>

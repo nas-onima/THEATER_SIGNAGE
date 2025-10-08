@@ -12,6 +12,7 @@ const authRoute = require("./routes/auth");
 const moviesRoute = require("./routes/movies");
 const signageRoute = require("./routes/signage");
 const cookieParser = require("cookie-parser");
+const path = require("path");
 
 dotenv.config();
 
@@ -21,13 +22,7 @@ const server = http.createServer(app);
 // 環境変数から設定を取得（デフォルトはローカル開発用）
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
-const io = socketIo(server, {
-  cors: {
-    origin: FRONTEND_URL,
-    methods: ["GET", "POST"],
-    credentials: true
-  }
-});
+const io = socketIo(server);
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
@@ -35,15 +30,24 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 //middleware
 app.use(express.json());
 app.use(cookieParser())
-app.use(cors({
-  credentials: true,
-  origin: FRONTEND_URL,
-}));
+
+// 本番環境用フロントエンド統合設定
+app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use("/api/users", usersRoute);
 app.use("/api/movies", moviesRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/signages", signageRoute);
+
+app.get(/^(?!\/api).*/, (req, res) => {
+    // この正規表現 /^(?!\/api).*/ は、
+    // "/api" で始まらないすべてのリクエストパスに一致します。
+    // そのため、静的ファイルにも一致しなかった /home や /about がここに到達します。
+
+    // req.path.startsWith('/api') のチェックは不要になりますが、念のため残すことも可能
+    
+    return res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+});
 
 //connect to DB and start server
 connectDB();
