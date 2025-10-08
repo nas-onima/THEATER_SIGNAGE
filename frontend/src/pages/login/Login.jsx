@@ -8,7 +8,6 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth";
 import { IoLogoGoogle } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
-import { useUserData } from "../../hooks/useUserData";
 import Loading from "../loading/Loading";
 
 export default function Login() {
@@ -17,7 +16,6 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false); // ログイン処理中の状態
   const [user, loading, error] = useAuthState(auth);
-  const { mutate } = useUserData(); // SWRのmutate関数を取得
   const nav = useNavigate();
   // const { user, isFetching, error, dispatch } = useContext(AuthContext);
 
@@ -25,15 +23,13 @@ export default function Login() {
     if (loading) return;
     if (user) {
       setIsLoggingIn(true); // ログイン成功時もローディング表示
-      // Firebase認証成功時にSWRキャッシュを更新
-      mutate();
-      // 少し遅延してからナビゲート（SWRの更新を待つ）
+      // ログイン成功時は直接ナビゲート（SWRは他のページで実行される）
       setTimeout(() => {
         setIsLoggingIn(false);
         nav("/home");
-      }, 500); // ローディング時間を少し延長
+      }, 200); // 短縮
     }
-  }, [user, loading, mutate, nav]);
+  }, [user, loading, nav]);
 
   const validateEmail = (email) => {
     // 簡易的なメールアドレスの正規表現
@@ -53,8 +49,7 @@ export default function Login() {
 
     try {
       await loginWithEmailAndPassword(email, password);
-      // ログイン成功後、SWRキャッシュを強制更新
-      mutate();
+      // ログイン成功後はuseEffectでナビゲーションされる
     } catch (error) {
       setIsLoggingIn(false); // エラー時はローディング停止
       setErrorMessage("ログインに失敗しました。");
@@ -115,7 +110,7 @@ export default function Login() {
 
                   try {
                     await signInWithGoogle();
-                    mutate(); // Google認証成功後もSWRキャッシュを更新
+                    // Google認証成功後はuseEffectでナビゲーションされる
                   } catch (error) {
                     setIsLoggingIn(false); // エラー時はローディング停止
                     setErrorMessage("Googleサインインに失敗しました。");
@@ -125,6 +120,14 @@ export default function Login() {
               >
                 {isLoggingIn ? "サインイン中..." : "Googleでサインイン"}
               </button>
+            </div>
+
+            {/* 新規登録リンク */}
+            <div className={styles.registerLink}>
+              <p>アカウントをお持ちでない方</p>
+              <Link to="/register" className={styles.registerButton}>
+                新規登録
+              </Link>
             </div>
           </div>
         </div>

@@ -41,9 +41,9 @@ const fetcher = async (url) => {
   return res.json();
 };
 
-export function useUserData() {
+export function useUserData(shouldFetch = true) {
   const { data, error, isLoading, mutate } = useSWR(
-    createApiUrl("/api/auth/user"),
+    shouldFetch ? createApiUrl("/api/auth/user") : null,
     fetcher,
     {
       revalidateOnFocus: false,
@@ -56,7 +56,7 @@ export function useUserData() {
 
   return {
     userData: data,
-    isLoading: isLoading,
+    isLoading: shouldFetch ? isLoading : false,
     isError: error,
     mutate,
   };

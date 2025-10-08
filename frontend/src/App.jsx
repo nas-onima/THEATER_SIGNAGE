@@ -13,28 +13,52 @@ import SignageManager from "./pages/signageManager/SignageManager";
 import Signage from "./pages/signage/Signage";
 import MovieList from "./pages/movieList/movieList";
 import SignageMenu from "./pages/signageMenu/SignageMenu";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "./firebase";
+
+// 認証が必要なページ用のラッパーコンポーネント
+function ProtectedRoute({ children }) {
+  const [user, loading, error] = useAuthState(auth);
+
+  if (loading) return <Loading />;
+  if (!user) return <Login />;
+
+  return children;
+}
+
+function AppContent() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/signage-menu" element={<SignageMenu />} />
+      <Route
+        path="/manage/movie"
+        element={
+          <ProtectedRoute>
+            <MovieList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/manage/signages"
+        element={
+          <ProtectedRoute>
+            <SignageManager />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/signage/:id" element={<Signage />} />
+    </Routes>
+  );
+}
 
 function App() {
-  const { userData, isLoading, isError, mutate } = useUserData();
-
   return (
     <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={userData ? <Home /> : isLoading ? <Loading /> : <Login />}
-        />
-        <Route
-          path="/home"
-          element={userData ? <Home /> : isLoading ? <Loading /> : <Login />}
-        />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/signage-menu" element={<SignageMenu />} />
-        <Route path="/manage/movie" element={<MovieList />} />
-        <Route path="/manage/signages" element={<SignageManager />} />
-        <Route path="/signage/:id" element={<Signage />} />
-      </Routes>
+      <AppContent />
     </Router>
   );
 }
