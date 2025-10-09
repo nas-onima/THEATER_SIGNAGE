@@ -61,7 +61,7 @@ export default function SignageMenu() {
       <div className={styles.container}>
         <div className={styles.header}>
           <h1>サイネージ選択</h1>
-          <p>表示したいサイネージを選択してください</p>
+          <p>表示するサイネージを選択してください</p>
         </div>
 
         <div className={styles.signageList}>
