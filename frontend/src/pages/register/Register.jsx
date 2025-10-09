@@ -115,7 +115,7 @@ export default function Register() {
               </button>
             </div>
             {errorMessage && <p className={styles.error}>{errorMessage}</p>}
-            <div className={styles.signup}>
+            {/* <div className={styles.signup}>
               <button
                 className={styles.signupButton}
                 type="button"
@@ -136,11 +136,11 @@ export default function Register() {
               >
                 {isRegistering ? "サインアップ中..." : "Googleでサインアップ"}
               </button>
-            </div>
+            </div> */}
 
             {/* ログインページへのリンク */}
             <div className={styles.registerLink}>
-              <p>すでにアカウントをお持ちの方</p>
+              <p>すでにアカウントをお持ちの場合</p>
               <Link to="/login" className={styles.registerButton}>
                 ログイン画面へ
               </Link>

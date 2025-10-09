@@ -9,6 +9,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { IoLogoGoogle } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import Loading from "../loading/Loading";
+import { mutate } from "swr";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -57,6 +58,10 @@ export default function Login() {
     }
   };
 
+  const handleContinue = () => {
+    mutate();
+  };
+
   // ログイン処理中またはFirebase初期化中の場合、Loadingを表示
   if (loading || isLoggingIn) {
     return <Loading />;
@@ -100,7 +105,7 @@ export default function Login() {
               </div>
             </form>
             {errorMessage && <p className={styles.error}>{errorMessage}</p>}
-            <div className={styles.signup}>
+            {/* <div className={styles.signup}>
               <button
                 className={styles.signupButton}
                 disabled={isLoggingIn} // ログイン中はボタンを無効化
@@ -120,13 +125,23 @@ export default function Login() {
               >
                 {isLoggingIn ? "サインイン中..." : "Googleでサインイン"}
               </button>
-            </div>
+            </div> */}
 
             {/* 新規登録リンク */}
             <div className={styles.registerLink}>
               <p>アカウントをお持ちでない方</p>
               <Link to="/register" className={styles.registerButton}>
                 新規登録
+              </Link>
+            </div>
+
+            <div className={styles.registerLink}>
+              <Link
+                to="/home"
+                className={styles.continueButton}
+                onClick={handleContinue()}
+              >
+                ログインせずに利用
               </Link>
             </div>
           </div>
