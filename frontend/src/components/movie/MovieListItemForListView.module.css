@@ -3,7 +3,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: left;
-    background-color: rgb(188, 165, 126);
     border-radius: 5px;
     margin: 2px;
     width: 100%;
@@ -14,21 +13,23 @@
     display: flex;
     justify-content: start;
     align-items: center;
-    padding: 5px;
     background-color: rgb(216, 240, 241);
     border: solid 1px black;
     border-radius: 5px;
     width: 100%;
     transition: all .2s;
-    height: 60px;
+    height: 80px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.397);
 }
 
 .movieWrapper:hover {
-    transform: scale(1.01);
+    transform: scale(0.99);
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.397);
 }
 
 
 .pubDate {
+    min-width: 130px;
     display: flex;
     border-radius: 5px;
     flex-direction: column;
@@ -37,6 +38,7 @@
     padding: 5px;
     white-space: nowrap;
     width: 20%;
+    margin-left: 10px;
 }
 
 .date {
@@ -68,11 +70,12 @@
 .listSettings {
     display: flex;
     flex-direction: row;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.397);
 }
 
 .moviePosterImage {
     border-radius: 5px;
-    height: 95%;
+    height: 80%;
     margin-left: 10px;
     margin-right: 0;
 }

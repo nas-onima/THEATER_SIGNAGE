@@ -17,7 +17,7 @@ export default function Home() {
         <h1>メニュー</h1>
         <div className={styles.menuContainer}>
           <div className={styles.menuItem}>
-            <Link to="/signage-menu" className={styles.menuLink}>
+            <Link to="/signage" className={styles.menuLink}>
               <div className={styles.iconWrapper}>
                 <span className={styles.icon}>📺</span>
               </div>
@@ -30,7 +30,7 @@ export default function Home() {
           </div>
 
           <div className={styles.menuItem}>
-            <Link to="/manage/signages" className={styles.menuLink}>
+            <Link to="/manage/signage" className={styles.menuLink}>
               <div className={styles.iconWrapper}>
                 <span className={styles.icon}>🏛️</span>
               </div>
@@ -42,18 +42,20 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className={styles.menuItem}>
-            <Link to="/manage/movie" className={styles.menuLink}>
-              <div className={styles.iconWrapper}>
-                <span className={styles.icon}>🎬</span>
-              </div>
-              <div className={styles.menuContent}>
-                <h3>作品管理</h3>
-                <p>映画作品の登録・編集・管理</p>
-              </div>
-              <span className={styles.arrow}>→</span>
-            </Link>
-          </div>
+          {userData ? (
+            <div className={styles.menuItem}>
+              <Link to="/manage/movie" className={styles.menuLink}>
+                <div className={styles.iconWrapper}>
+                  <span className={styles.icon}>🎬</span>
+                </div>
+                <div className={styles.menuContent}>
+                  <h3>作品管理</h3>
+                  <p>上映作品の登録・編集・管理</p>
+                </div>
+                <span className={styles.arrow}>→</span>
+              </Link>
+            </div>
+          ) : null}
         </div>
       </div>
     </>

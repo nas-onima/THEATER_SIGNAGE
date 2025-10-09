@@ -40,12 +40,6 @@ app.use("/api/auth", authRoute);
 app.use("/api/signages", signageRoute);
 
 app.get(/^(?!\/api).*/, (req, res) => {
-  // この正規表現 /^(?!\/api).*/ は、
-  // "/api" で始まらないすべてのリクエストパスに一致します。
-  // そのため、静的ファイルにも一致しなかった /home や /about がここに到達します。
-
-  // req.path.startsWith('/api') のチェックは不要になりますが、念のため残すことも可能
-
   return res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
 });
 

@@ -76,11 +76,11 @@ export default function SignageDetailsDialog({
 
     setIsUpdating(true);
     try {
-      const token = await getIdTokenForSWR();
+      //const token = await getIdTokenForSWR();
       const res = await fetch(createApiUrl(`/api/signages/${signage._id}`), {
         method: "PATCH",
         headers: {
-          Authorization: `Bearer ${token}`,
+          //Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -134,11 +134,11 @@ export default function SignageDetailsDialog({
   const handleRemoveMovie = async () => {
     setIsUpdating(true);
     try {
-      const token = await getIdTokenForSWR();
+      //const token = await getIdTokenForSWR();
       const res = await fetch(createApiUrl(`/api/signages/${signage._id}`), {
         method: "PATCH",
         headers: {
-          Authorization: `Bearer ${token}`,
+          //Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({

@@ -210,8 +210,12 @@ export default function Signage() {
           setIsTransitioning(false);
         }, 300);
       } else {
-        // データが同じ場合は即座に更新
-        mutateSignage(updatedSignage, false);
+        setIsTransitioning(true);
+        setTimeout(() => {
+          mutateSignage(updatedSignage, false);
+          setAnimationKey((prev) => prev + 1);
+          setIsTransitioning(false);
+        }, 300);
       }
     });
 

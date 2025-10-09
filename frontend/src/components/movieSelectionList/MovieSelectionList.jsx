@@ -5,10 +5,12 @@ import { getIdTokenForSWR } from "../../hooks/useUserData";
 import { createApiUrl } from "../../config/api";
 
 const fetcher = async (url) => {
-  const token = await getIdTokenForSWR();
+  //const token = await getIdTokenForSWR();
   const res = await fetch(url, {
+    method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`,
+      //Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
   });
   if (!res.ok) {

@@ -47,7 +47,7 @@ export default function Register() {
     if (name !== "") {
       setIsRegistering(true);
       setErrorMessage(""); // エラーメッセージをクリア
-      
+
       try {
         await registerWithEmailAndPassword(name, email, password);
         // 登録成功後はuseEffectでナビゲーションされる
@@ -106,8 +106,8 @@ export default function Register() {
               />
             </div>
             <div>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className={styles.loginButton}
                 disabled={isRegistering}
               >
@@ -123,7 +123,7 @@ export default function Register() {
                 onClick={async () => {
                   setIsRegistering(true);
                   setErrorMessage("");
-                  
+
                   try {
                     await signInWithGoogle();
                     // Google認証成功後はuseEffectでナビゲーションされる

@@ -33,7 +33,9 @@ function AppContent() {
       <Route path="/home" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/signage-menu" element={<SignageMenu />} />
+      <Route path="/signage" element={<SignageMenu />} />
+      <Route path="/signage/:id" element={<Signage />} />
+      <Route path="/manage/signage" element={<SignageManager />} />
       <Route
         path="/manage/movie"
         element={
@@ -42,15 +44,6 @@ function AppContent() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/manage/signages"
-        element={
-          <ProtectedRoute>
-            <SignageManager />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/signage/:id" element={<Signage />} />
     </Routes>
   );
 }

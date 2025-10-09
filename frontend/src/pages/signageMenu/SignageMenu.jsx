@@ -41,7 +41,7 @@ export default function SignageMenu() {
     );
   }
 
-  if (userError || signageError || !signageData) {
+  if (signageError || !signageData) {
     return (
       <>
         <Topbar />

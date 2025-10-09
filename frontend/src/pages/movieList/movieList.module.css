@@ -7,11 +7,13 @@
     width: 80%;
     max-width: 1200px;
     text-align: center;
+    
 }
 
 .pageTitle {
     margin-top: 20px;
     text-align: center;
+    
 }
 
 select {
@@ -28,6 +30,7 @@ select {
     background-color: rgb(201, 230, 255);
     padding: 10px;
     border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.397);
 }
 
 .listSettingsItem {
@@ -40,6 +43,7 @@ select {
     align-items: center;
     justify-content: center;
     text-align: center;
+    margin: 5px;
 }
 
 .pageEllipsis {
@@ -48,7 +52,6 @@ select {
     align-items: center;
     justify-content: center;
     text-align: center;
-
     width: 2em;
     height: 1em;
     margin: 5px;

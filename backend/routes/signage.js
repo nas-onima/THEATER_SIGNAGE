@@ -4,7 +4,7 @@ const SignageStatus = require("../models/SignageStatus");
 const { verifyToken } = require("./middleware");
 
 // サイネージ新規登録
-router.post("/register", async (req, res) => {
+router.post("/register", verifyToken, async (req, res) => {
     try {
         const newSignage = await new SignageStatus();
 
@@ -71,7 +71,6 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-
 // 特定サイネージの表示データ更新（サイネージ更新はこっちを常用）
 router.patch("/:id", async (req, res) => {
     try {
@@ -115,7 +114,7 @@ router.patch("/:id", async (req, res) => {
 });
 
 // 特定のサイネージ削除
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken, async (req, res) => {
     try {
         const signage = await SignageStatus.findByIdAndDelete(req.params.id);
         if (!signage) return res.status(404).json("TARGET SIGNAGE NOT FOUND");

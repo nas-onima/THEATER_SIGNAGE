@@ -5,7 +5,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100vw;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 20px;
 }
 
 .pageTitle {
@@ -17,12 +19,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100vw;
+    width: 100%;
     height: 100%;
     flex-wrap: wrap;
+    box-sizing: border-box;
 }
 
-.movieSelectDialog{
+.movieSelectDialog {
     display: flex;
     flex-direction: column;
     align-items: center;

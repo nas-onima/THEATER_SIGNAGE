@@ -27,6 +27,10 @@ export default function Topbar() {
     }
   };
 
+  const handleLogin = () => {
+    nav("/login");
+  };
+
   return (
     <div className={styles.mainContainer}>
       <div className={styles.menu}>
@@ -37,12 +41,15 @@ export default function Topbar() {
       <Link to="/home" className={styles.menuLink}>
         <div className={styles.logo}>Theater Signage System for NGGC</div>
       </Link>
-      <div className={styles.user}>
+      <div
+        className={styles.user}
+        onClick={!userData ? handleLogin : handleLogout}
+      >
         <div className={styles.userButton}>
           {/* <div className={styles.userLabel}>LOGIN</div> */}
           {/* <AccountCircleIcon className={styles.userIcon} /> */}
           {userData ? (
-            <div className={styles.userName} onClick={handleLogout}>
+            <div className={styles.userName}>
               <div className={styles.userNameLabel}>{userData.name}</div>
               <div className={styles.logoutLabel}>ログアウト</div>
             </div>

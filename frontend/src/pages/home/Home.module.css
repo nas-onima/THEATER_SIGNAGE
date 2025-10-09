@@ -1,14 +1,16 @@
 .homeContainer {
-    width: 100vw;
+    width: 100%;
     min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* Topbarの高さを考慮 */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 0px 40px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
     color: white;
+    box-sizing: border-box;
 }
 
 .homeContainer h1 {

@@ -4,11 +4,24 @@ import stylesForPosterView from "./MovieListItemForPosterView.module.css";
 import { fromZonedTime, format } from "date-fns-tz";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function MovieListItem({ movie, displayMode = "poster", onMovieClick }) {
+export default function MovieListItem({
+  movie,
+  displayMode = "poster",
+  onMovieClick,
+}) {
   const timeZone = "Asia/Tokyo";
-  const zonedDate = fromZonedTime(movie.releaseDate, timeZone);
-  const formattedDate = format(zonedDate, "yyyy/MM/dd", { timeZone });
-  const formattedTime = format(zonedDate, "HH:mm", { timeZone });
+  const zonedReleaseDate = movie.releaseDate
+    ? fromZonedTime(movie.releaseDate, timeZone)
+    : null;
+  const zonedEndDate = movie.endDate
+    ? fromZonedTime(movie.endDate, timeZone)
+    : null;
+  const formattedReleaseDate = zonedReleaseDate
+    ? format(zonedReleaseDate, "yyyy/MM/dd", { timeZone })
+    : null;
+  const formattedEndDate = zonedEndDate
+    ? format(zonedEndDate, "yyyy/MM/dd", { timeZone })
+    : null;
   const nav = useNavigate();
 
   const handleMovieClick = () => {
@@ -38,9 +51,11 @@ export default function MovieListItem({ movie, displayMode = "poster", onMovieCl
         >
           <div className={stylesForListView.pubDate}>
             <div className={stylesForListView.date}>
-              {formattedDate || "----/--/--"}
+              {formattedReleaseDate || "----/--/--"} 公開
             </div>
-            <div className={stylesForListView.pubLabel}>公開</div>
+            <div className={stylesForListView.pubLabel}>
+              {formattedEndDate ? formattedEndDate + " 終了"  : "終了日未定"}
+            </div>
           </div>
           {movie.image ? (
             <img
@@ -119,10 +134,10 @@ export default function MovieListItem({ movie, displayMode = "poster", onMovieCl
                   【{movie.rating}】
                 </span>
               ) : (
-                <span
-                  className={stylesForListView.rating}
-                  style={ratingStyle}
-                > 【NR】</span>
+                <span className={stylesForListView.rating} style={ratingStyle}>
+                  {" "}
+                  【NR】
+                </span>
               )}
             </div>
             {/* <div className={styles.rating}>{movie.rating}</div> */}
