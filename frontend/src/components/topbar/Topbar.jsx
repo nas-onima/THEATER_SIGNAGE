@@ -41,11 +41,11 @@ export default function Topbar() {
       <Link to="/home" className={styles.menuLink}>
         <div className={styles.logo}>Theater Signage System for NGGC</div>
       </Link>
-      <div
-        className={styles.user}
-        onClick={!userData ? handleLogin : handleLogout}
-      >
-        <div className={styles.userButton}>
+      <div className={styles.user}>
+        <div
+          className={styles.userButton}
+          onClick={!userData ? handleLogin : handleLogout}
+        >
           {/* <div className={styles.userLabel}>LOGIN</div> */}
           {/* <AccountCircleIcon className={styles.userIcon} /> */}
           {userData ? (
